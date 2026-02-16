@@ -18,6 +18,11 @@ export default function HeroSection() {
     { path: "/logos/iaslg.png", color: "rgba(120, 255, 150, 1)", href: "#" },
     { path: "/logos/iespeslg.png", color: "rgba(120, 255, 120, 1)", href: "#" },
     { path: "/logos/raslg.png", color: "rgba(210, 120, 255, 1)", href: "#" },
+    {
+      path: "/logos/sightlogo.png",
+      color: "rgba(210, 120, 255, 1)",
+      href: "#",
+    },
   ];
 
   useEffect(() => {

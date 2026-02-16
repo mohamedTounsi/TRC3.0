@@ -9,7 +9,7 @@ const teamMembers = [
   {
     firstName: "Emna",
     lastName: "Megdiche",
-    position: "Event Leader",
+    position: "Technichal Manager",
     image: "/team/megdich.png",
     social: {
       instagram: "https://www.instagram.com/emna_megdiche3/",
@@ -77,7 +77,11 @@ const teamMembers = [
     lastName: "Abidi",
     position: "Ambassador Coordinator",
     image: "/team/elee.png",
-    social: { instagram: "#", facebook: "#", linkedin: "#" },
+    social: {
+      instagram: "https://www.instagram.com/elee__abidi/",
+      facebook: "https://www.facebook.com/elee.abidi.7",
+      linkedin: "https://www.linkedin.com/in/elee-abidi-68ab8432a/",
+    },
   },
   {
     firstName: "Rim",
@@ -95,21 +99,33 @@ const teamMembers = [
     lastName: "Rebai",
     position: "Logistics Leader",
     image: "/team/rebai.png",
-    social: { instagram: "#", facebook: "#", linkedin: "#" },
+    social: {
+      instagram: "https://www.instagram.com/mohamed______rebai/",
+      facebook: "https://www.facebook.com/search/top?q=rebai%20mohamed",
+      linkedin: "https://www.linkedin.com/in/mohamed-rebai-/",
+    },
   },
   {
     firstName: "Mahmoud",
     lastName: "Dammak",
     position: "Media Leader",
     image: "/team/dammak.png",
-    social: { instagram: "#", facebook: "#", linkedin: "#" },
+    social: {
+      instagram: "https://www.instagram.com/dammak67/",
+      facebook: "https://www.facebook.com/mahmoud.dammak.2025",
+      linkedin: "#",
+    },
   },
   {
     firstName: "Mohamed",
     lastName: "Tounsi",
     position: "Website Manager",
     image: "/team/rouge.png",
-    social: { instagram: "#", facebook: "#", linkedin: "#" },
+    social: {
+      instagram: "https://www.instagram.com/mohamed__tounsii/",
+      facebook: "https://www.facebook.com/mohamed.tounsi.583",
+      linkedin: "https://www.linkedin.com/in/mohamed-tounsi-541439351/",
+    },
   },
 ];
 

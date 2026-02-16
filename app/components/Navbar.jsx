@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [programOpen, setProgramOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Smooth scroll function
   const scrollToSection = (id) => {
@@ -31,6 +32,16 @@ export default function Navbar() {
     router.push("/");
   };
 
+  // Handle home click - if on home page, scroll to top, otherwise go to home
+  const handleHomeClick = () => {
+    setIsOpen(false);
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <>
       <nav className="fixed w-full z-50 bg-gradient-to-br from-[#0f1419] via-[#1a1f3a] to-[#2d1b4e] shadow-xl">
@@ -46,15 +57,15 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-10 text-sm font-light tracking-wider text-white">
             <button
-              onClick={() => scrollToSection("home")}
-              className="hover:text-[#9d927d] transition"
+              onClick={handleHomeClick}
+              className="hover:text-[#9d927d] transition cursor-pointer"
             >
               HOME
             </button>
 
             <button
               onClick={() => scrollToSection("about")}
-              className="hover:text-[#9d927d] transition"
+              className="hover:text-[#9d927d] transition cursor-pointer"
             >
               ABOUT
             </button>
@@ -63,7 +74,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setProgramOpen(!programOpen)}
-                className="flex items-center gap-2 hover:text-[#9d927d] transition"
+                className="flex items-center gap-2 hover:text-[#9d927d] transition cursor-pointer"
               >
                 PROGRAM <ChevronDown size={18} />
               </button>
@@ -79,14 +90,14 @@ export default function Navbar() {
                   >
                     <button
                       onClick={() => goToPage("/schedule")}
-                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors"
+                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors cursor-pointer"
                     >
                       Schedule
                     </button>
                     <div className="h-px bg-[#efb073]/20" />
                     <button
                       onClick={() => goToPage("/speakers")}
-                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors"
+                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors cursor-pointer"
                     >
                       Speakers
                     </button>
@@ -97,21 +108,21 @@ export default function Navbar() {
 
             <button
               onClick={() => goToPage("/sponsors")}
-              className="hover:text-[#9d927d] transition"
+              className="hover:text-[#9d927d] transition cursor-pointer"
             >
               SPONSORS
             </button>
 
             <button
               onClick={() => goToPage("/editions")}
-              className="hover:text-[#9d927d] transition"
+              className="hover:text-[#9d927d] transition cursor-pointer"
             >
               EDITIONS
             </button>
 
             <button
               onClick={() => router.push("/registration")}
-              className="border border-[#efb073] bg-[#efb073] px-5 py-2 rounded-lg cursor-pointer hover:bg-[#efb073]/90 transition text-[#0f1419] font-light"
+              className="border-2 border-[#efb073] bg-[#efb073] px-5 py-2 rounded-lg cursor-pointer hover:bg-[#efb073] text-[#0f1419] font-light shadow-[0_0_10px_#efb073] hover:shadow-[0_0_15px_#efb073] transition-all duration-300"
             >
               REGISTER
             </button>
@@ -119,7 +130,7 @@ export default function Navbar() {
 
           {/* Hamburger */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-white cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={26} /> : <Menu size={26} />}
@@ -143,14 +154,22 @@ export default function Navbar() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden bg-[#0f1419] border-t border-[#9d927d]/30"
             >
-              <div className="flex flex-col gap-6 p-6 text-white font-light tracking-wider">
-                <button onClick={() => scrollToSection("home")}>HOME</button>
-                <button onClick={() => scrollToSection("about")}>ABOUT</button>
+              <div className="flex flex-col items-center gap-6 p-6 text-white font-light tracking-wider">
+                <button onClick={handleHomeClick} className="cursor-pointer">
+                  HOME
+                </button>
 
-                <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => scrollToSection("about")}
+                  className="cursor-pointer"
+                >
+                  ABOUT
+                </button>
+
+                <div className="flex flex-col items-center gap-3 w-full">
                   <button
                     onClick={() => setProgramOpen(!programOpen)}
-                    className="flex items-center gap-2 text-left"
+                    className="flex items-center gap-2 text-center cursor-pointer"
                   >
                     PROGRAM{" "}
                     <ChevronDown
@@ -166,17 +185,17 @@ export default function Navbar() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="flex flex-col gap-3 pl-4 border-l border-[#efb073]/40"
+                        className="flex flex-col items-center gap-3"
                       >
                         <button
                           onClick={() => goToPage("/schedule")}
-                          className="text-sm font-light hover:text-[#efb073] transition"
+                          className="text-sm font-light hover:text-[#efb073] transition cursor-pointer"
                         >
                           Schedule
                         </button>
                         <button
                           onClick={() => goToPage("/speakers")}
-                          className="text-sm font-light hover:text-[#efb073] transition"
+                          className="text-sm font-light hover:text-[#efb073] transition cursor-pointer"
                         >
                           Speakers
                         </button>
@@ -185,12 +204,23 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
 
-                <button onClick={() => goToPage("/sponsors")}>SPONSORS</button>
-                <button onClick={() => goToPage("/editions")}>EDITIONS</button>
+                <button
+                  onClick={() => goToPage("/sponsors")}
+                  className="cursor-pointer"
+                >
+                  SPONSORS
+                </button>
+
+                <button
+                  onClick={() => goToPage("/editions")}
+                  className="cursor-pointer"
+                >
+                  EDITIONS
+                </button>
 
                 <button
                   onClick={() => router.push("/registration")}
-                  className="border border-[#efb073] bg-[#efb073] px-5 py-2 rounded-lg cursor-pointer hover:bg-[#efb073]/90 transition text-[#0f1419] font-light"
+                  className="border-2 border-[#efb073] bg-[#efb073] px-5 py-2 rounded-lg cursor-pointer hover:bg-[#efb073] text-[#0f1419] font-light shadow-[0_0_10px_#efb073] hover:shadow-[0_0_15px_#efb073] transition-all duration-300"
                 >
                   REGISTER
                 </button>

@@ -270,8 +270,8 @@ Participants attended workshops on artificial intelligence applied to healthcare
     image: "/logos/logotrc21.png",
     theme: "Sustainable Cities & Communities",
     location: "ISIMS, Sfax",
-    date: "February 24-25, 2025",
-    duration: "60 Hours",
+    date: "March 24-25, 2025",
+    duration: "24 Hours",
     description:
       "Building on the unprecedented success of TRC 1.0, the second edition pushed boundaries further. With 250 participants and expanded tracks, TRC 2.0 demonstrated that the movement had truly taken root.",
     fullDescription: `The second edition, held on March 24–25, 2025 at ISIMS, brought together 250 students and focused on using AI to tackle industrial and societal challenges.

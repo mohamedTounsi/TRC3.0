@@ -112,14 +112,14 @@ export default function RegistrationClosedPage() {
           >
             {/* Contact Email */}
             <a
-              href="mailto:contact@trc.com"
+              href="mailto:isims.sb@ieee.org"
               className="inline-flex items-center gap-2 text-gray-300 hover:text-[#efb073] transition-colors group"
             >
               <Mail
                 size={18}
                 className="group-hover:scale-110 transition-transform"
               />
-              <span className="font-light">contact@trc.com</span>
+              <span className="font-light">isims.sb@ieee.org</span>
             </a>
 
             {/* Social Links */}

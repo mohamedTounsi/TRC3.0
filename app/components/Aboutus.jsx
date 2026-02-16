@@ -10,7 +10,7 @@ const features = [
 ];
 
 export default function Aboutus() {
-  const bgImageUrl = "/whatis1.jpg"; // <-- Replace this with your image
+  const bgImageUrl = "/whatis3.png"; // <-- Replace rezathwith your image
 
   return (
     <div
@@ -57,7 +57,7 @@ export default function Aboutus() {
                   transition={{ duration: 0.8, delay: 0.3 }}
                   className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight"
                 >
-                  What Is
+                  What is
                   <span className="ml-3 text-[#efb073]">TRC ?</span>
                 </motion.h1>
 
@@ -75,13 +75,13 @@ export default function Aboutus() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="text-gray-300 leading-relaxed font-light text-lg"
               >
-                This event is a national non-technical/technical hackathon where
-                participants develop and present innovative solutions to address
-                modern global challenges through IT innovations. Each edition
-                focuses on a different theme, such as poverty or the impact of
-                war. Interactive workshops and team-building activities enrich
-                the experience, fostering networking, collaboration, and
-                creativity in an inspiring and friendly atmosphere.
+                This event is a National Technical Hackathon where participants
+                develop and present innovative solutions to address modern
+                global challenges through IT innovations. Each edition focuses
+                on a different theme, such as poverty or the impact of war.
+                Interactive workshops and team-building activities enrich the
+                experience, fostering networking, collaboration, and creativity
+                in an inspiring and friendly atmosphere.
               </motion.p>
 
               {/* Features */}

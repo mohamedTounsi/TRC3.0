@@ -43,9 +43,9 @@ export default function Footer() {
   ];
 
   const contactInfo = [
-    { icon: Mail, text: "contact@trc.com", href: "mailto:contact@trc.com" },
-    { icon: Phone, text: "+216 XX XXX XXX", href: "tel:+216XXXXXXXX" },
-    { icon: MapPin, text: "Tunisia", href: "#" },
+    { icon: Mail, text: "isims.sb@ieee.org", href: "mailto:isims.sb@ieee.org" },
+    { icon: Phone, text: "+216 53 744 705", href: "tel:+216 53 744 705" },
+    { icon: MapPin, text: "Sfax, Tunisia", href: "#" },
   ];
 
   const scrollToSection = (id) => {

@@ -10,27 +10,30 @@ const features = [
 ];
 
 export default function Aboutus() {
-  const bgImageUrl = "/whatis3.png"; // <-- Replace rezathwith your image
+  const bgImageUrl = "/whatis3.png"; // <-- Replace with your image
 
   return (
     <div
       id="about"
       className="relative w-full min-h-screen pt-16 pb-16 px-4 sm:px-8 lg:px-16 flex items-center justify-center overflow-hidden"
     >
-      {/* Fixed Background Image */}
+      {/* Desktop Background Image (hidden on mobile) */}
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 -z-10 hidden sm:block"
         style={{
           backgroundImage: `url(${bgImageUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: "fixed", // <-- keeps image fixed on scroll
+          backgroundAttachment: "fixed",
           filter: "blur(2px)",
         }}
       />
 
-      {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-black/40 -z-10" />
+      {/* Mobile Background Gradient (visible only on mobile) */}
+      <div className="absolute inset-0 -z-10 sm:hidden bg-gradient-to-br from-[#0f1419] via-[#1a1f3a] to-[#2d1b4e]" />
+
+      {/* Overlay for readability (only show on desktop when image is visible) */}
+      <div className="absolute inset-0 bg-black/40 -z-10 hidden sm:block" />
 
       <motion.div
         initial={{ opacity: 0 }}

@@ -269,7 +269,9 @@ export default function HeroSection() {
               target="_blank"
               rel="noopener noreferrer"
               className={`logo-link w-20 h-20 md:w-27 md:h-27 ${
-                i === 0 ? "col-span-3 md:col-span-1 flex justify-center" : ""
+                i === 0 || i === events.length - 1
+                  ? "col-span-3 flex justify-center"
+                  : ""
               }`}
               style={{ "--logoColor": event.color }}
               custom={i}

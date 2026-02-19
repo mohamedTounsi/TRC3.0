@@ -292,7 +292,7 @@ The main challenge involved designing prototypes that integrate AI to solve real
         description: "From Tunisia & abroad",
       },
       {
-        number: "15",
+        number: "25",
         label: "Projects",
         description: "Award-winning solutions",
       },

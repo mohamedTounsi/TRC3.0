@@ -39,7 +39,7 @@ const editions = [
     date: "March 24-25, 2025",
     stats: [
       { number: "250", label: "Participants" },
-      { number: "15", label: "Projects" },
+      { number: "25", label: "Projects" },
       { number: "5", label: "Awards" },
     ],
     highlights: [

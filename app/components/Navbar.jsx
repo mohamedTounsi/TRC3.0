@@ -11,7 +11,21 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Smooth scroll function
+  // ================= NAV DATA =================
+  const navLinks = [
+    { label: "HOME", type: "home" },
+    { label: "ABOUT", type: "scroll", target: "about" },
+    { label: "SPONSORS", type: "page", target: "/sponsors" },
+    { label: "EDITIONS", type: "page", target: "/editions" },
+    { label: "AMBASSADORS", type: "page", target: "/ambassadors" }, // ✅ ADDED
+  ];
+
+  const programLinks = [
+    { label: "Schedule", target: "/schedule" },
+    { label: "Speakers", target: "/speakers" },
+  ];
+  // ==================================================
+
   const scrollToSection = (id) => {
     setIsOpen(false);
     const el = document.getElementById(id);
@@ -20,25 +34,32 @@ export default function Navbar() {
     }
   };
 
-  // Navigate to page
   const goToPage = (page) => {
     setIsOpen(false);
     router.push(page);
   };
 
-  // Handle logo click - navigate to home
   const handleLogoClick = () => {
     setIsOpen(false);
     router.push("/");
   };
 
-  // Handle home click - if on home page, scroll to top, otherwise go to home
   const handleHomeClick = () => {
     setIsOpen(false);
     if (pathname === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       router.push("/");
+    }
+  };
+
+  const handleNavClick = (link) => {
+    if (link.type === "home") {
+      handleHomeClick();
+    } else if (link.type === "scroll") {
+      scrollToSection(link.target);
+    } else if (link.type === "page") {
+      goToPage(link.target);
     }
   };
 
@@ -56,21 +77,17 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-10 text-sm font-light tracking-wider text-white">
-            <button
-              onClick={handleHomeClick}
-              className="hover:text-[#9d927d] transition cursor-pointer"
-            >
-              HOME
-            </button>
+            {navLinks.slice(0, 2).map((link) => (
+              <button
+                key={link.label}
+                onClick={() => handleNavClick(link)}
+                className="hover:text-[#9d927d] transition cursor-pointer"
+              >
+                {link.label}
+              </button>
+            ))}
 
-            <button
-              onClick={() => scrollToSection("about")}
-              className="hover:text-[#9d927d] transition cursor-pointer"
-            >
-              ABOUT
-            </button>
-
-            {/* Program dropdown */}
+            {/* PROGRAM DROPDOWN */}
             <div className="relative">
               <button
                 onClick={() => setProgramOpen(!programOpen)}
@@ -88,38 +105,35 @@ export default function Navbar() {
                     transition={{ duration: 0.2 }}
                     className="absolute mt-4 bg-[#1a1f3a] rounded-lg shadow-xl overflow-hidden border border-[#efb073] backdrop-blur-sm"
                   >
-                    <button
-                      onClick={() => goToPage("/schedule")}
-                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors cursor-pointer"
-                    >
-                      Schedule
-                    </button>
-                    <div className="h-px bg-[#efb073]/20" />
-                    <button
-                      onClick={() => goToPage("/speakers")}
-                      className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors cursor-pointer"
-                    >
-                      Speakers
-                    </button>
+                    {programLinks.map((item, index) => (
+                      <div key={item.label}>
+                        <button
+                          onClick={() => goToPage(item.target)}
+                          className="block px-6 py-3 hover:bg-[#efb073]/10 w-full text-left text-sm font-light text-white transition-colors cursor-pointer"
+                        >
+                          {item.label}
+                        </button>
+                        {index !== programLinks.length - 1 && (
+                          <div className="h-px bg-[#efb073]/20" />
+                        )}
+                      </div>
+                    ))}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            <button
-              onClick={() => goToPage("/sponsors")}
-              className="hover:text-[#9d927d] transition cursor-pointer"
-            >
-              SPONSORS
-            </button>
+            {navLinks.slice(2).map((link) => (
+              <button
+                key={link.label}
+                onClick={() => handleNavClick(link)}
+                className="hover:text-[#9d927d] transition cursor-pointer"
+              >
+                {link.label}
+              </button>
+            ))}
 
-            <button
-              onClick={() => goToPage("/editions")}
-              className="hover:text-[#9d927d] transition cursor-pointer"
-            >
-              EDITIONS
-            </button>
-
+            {/* REGISTER BUTTON */}
             <button
               onClick={() => router.push("/registration")}
               className="border-2 border-[#efb073] bg-[#efb073] px-5 py-2 rounded-lg cursor-pointer hover:bg-[#efb073] text-[#0f1419] font-light shadow-[0_0_10px_#efb073] hover:shadow-[0_0_15px_#efb073] transition-all duration-300"
@@ -155,17 +169,17 @@ export default function Navbar() {
               className="md:hidden bg-[#0f1419] border-t border-[#9d927d]/30"
             >
               <div className="flex flex-col items-center gap-6 p-6 text-white font-light tracking-wider">
-                <button onClick={handleHomeClick} className="cursor-pointer">
-                  HOME
-                </button>
+                {navLinks.slice(0, 2).map((link) => (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link)}
+                    className="cursor-pointer"
+                  >
+                    {link.label}
+                  </button>
+                ))}
 
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="cursor-pointer"
-                >
-                  ABOUT
-                </button>
-
+                {/* Mobile Program */}
                 <div className="flex flex-col items-center gap-3 w-full">
                   <button
                     onClick={() => setProgramOpen(!programOpen)}
@@ -179,6 +193,7 @@ export default function Navbar() {
                       }`}
                     />
                   </button>
+
                   <AnimatePresence>
                     {programOpen && (
                       <motion.div
@@ -187,36 +202,29 @@ export default function Navbar() {
                         exit={{ opacity: 0, height: 0 }}
                         className="flex flex-col items-center gap-3"
                       >
-                        <button
-                          onClick={() => goToPage("/schedule")}
-                          className="text-sm font-light hover:text-[#efb073] transition cursor-pointer"
-                        >
-                          Schedule
-                        </button>
-                        <button
-                          onClick={() => goToPage("/speakers")}
-                          className="text-sm font-light hover:text-[#efb073] transition cursor-pointer"
-                        >
-                          Speakers
-                        </button>
+                        {programLinks.map((item) => (
+                          <button
+                            key={item.label}
+                            onClick={() => goToPage(item.target)}
+                            className="text-sm font-light hover:text-[#efb073] transition cursor-pointer"
+                          >
+                            {item.label}
+                          </button>
+                        ))}
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                <button
-                  onClick={() => goToPage("/sponsors")}
-                  className="cursor-pointer"
-                >
-                  SPONSORS
-                </button>
-
-                <button
-                  onClick={() => goToPage("/editions")}
-                  className="cursor-pointer"
-                >
-                  EDITIONS
-                </button>
+                {navLinks.slice(2).map((link) => (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link)}
+                    className="cursor-pointer"
+                  >
+                    {link.label}
+                  </button>
+                ))}
 
                 <button
                   onClick={() => router.push("/registration")}
@@ -230,7 +238,6 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Navbar spacer */}
       <div className="h-20"></div>
     </>
   );

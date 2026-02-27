@@ -15,7 +15,6 @@ export default function Home() {
       <Navbar/>
       <HeroSection/>
       <Aboutus/>
-      <Ambassador/>
      <PreviousEditions/>
      <Team/>
      <Footer/>

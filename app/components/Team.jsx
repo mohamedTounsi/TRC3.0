@@ -131,7 +131,7 @@ const teamMembers = [
 
 export default function Team() {
   return (
-    <div className="relative w-full border-t border-[#9d927d]/30 min-h-screen overflow-hidden pt-5 md:pt-20 pb-20 px-2 sm:px-8 lg:px-16 flex flex-col items-center justify-center bg-gradient-to-br from-[#0f1419] via-[#1a1f3a] to-[#2d1b4e]">
+    <div className="relative w-full border-t border-[#9d927d]/30 min-h-screen overflow-hidden pt-5 md:pt-20 pb-20 px-2 sm:px-8 lg:px-16 flex flex-col items-center justify-center bg-gradient-to-br from-[#0f1419] via-[#1a1f3a] to-[#0f1419]">
       {/* Background texture */}
       <div className="absolute inset-0 -z-10">
         <div
@@ -208,9 +208,9 @@ function TeamCard({ member, delay, isLastRow }) {
       className={`w-[calc(50%-12px)] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]
       ${isLastRow ? "lg:mx-auto" : ""}`}
     >
-      <div className="relative border border-[#9d927d] rounded-2xl backdrop-blur-md bg-gradient-to-br from-[#1a1f3a]/90 to-[#2d1b4e]/90 py-6 px-1.5 sm:p-6 h-full">
+      <div className="relative border border-[#9d927d]  backdrop-blur-md bg-gradient-to-br from-[#1a1f3a]/10 to-[#2d1b4e]/90 py-6 px-1.5 sm:p-6 h-full">
         {/* Image */}
-        <div className="relative w-full h-48 sm:h-72 lg:h-80   overflow-hidden rounded-2xl">
+        <div className="relative w-full h-48 sm:h-72 lg:h-80   overflow-hidden ">
           <Image
             src={member.image}
             alt={`${member.firstName} ${member.lastName}`}

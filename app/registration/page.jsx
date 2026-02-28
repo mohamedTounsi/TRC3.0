@@ -121,7 +121,7 @@ export default function RegistrationPage() {
         .logo-banner-bg {
           position: absolute;
           inset: 0;
-          background-image: url('/whatis1.jpg');
+          background-image: url('/whatis3.png');
           background-size: cover;
           background-position: center;
           filter: blur(1px) brightness(0.95);

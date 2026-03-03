@@ -11,12 +11,36 @@ export default function HeroSection() {
   });
 
   const events = [
-    { path: "/logos/sblg.png", color: "rgba(173, 216, 230, 1)", href: "#" },
-    { path: "/logos/wielg.png", color: "rgba(255, 182, 255, 1)", href: "#" },
-    { path: "/logos/cslg.png", color: "rgba(255, 235, 120, 1)", href: "#" },
-    { path: "/logos/smclg.png", color: "rgba(160, 210, 255, 1)", href: "#" },
-    { path: "/logos/iaslg.png", color: "rgba(120, 255, 150, 1)", href: "#" },
-    { path: "/logos/iespeslg.png", color: "rgba(120, 255, 120, 1)", href: "#" },
+    {
+      path: "/logos/sblg.png",
+      color: "rgba(173, 216, 230, 1)",
+      href: "https://isims.ieee.tn/",
+    },
+    {
+      path: "/logos/wielg.png",
+      color: "rgba(255, 182, 255, 1)",
+      href: "https://wie-isims.ieee.tn/",
+    },
+    {
+      path: "/logos/csn.png",
+      color: "rgba(255, 235, 120, 1)",
+      href: "https://cs-isims.ieee.tn/",
+    },
+    {
+      path: "/logos/smcn.png",
+      color: "rgba(160, 210, 255, 1)",
+      href: "https://smc-isims.ieee.tn/",
+    },
+    {
+      path: "/logos/iaslg.png",
+      color: "rgba(120, 255, 150, 1)",
+      href: "https://ias-isims.ieee.tn/",
+    },
+    {
+      path: "/logos/iespeslg.png",
+      color: "rgba(120, 255, 120, 1)",
+      href: "https://ies-pes-isims.ieee.tn/",
+    },
     { path: "/logos/raslg.png", color: "rgba(210, 120, 255, 1)", href: "#" },
     {
       path: "/logos/sightlogo.png",

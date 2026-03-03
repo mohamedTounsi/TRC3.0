@@ -15,7 +15,7 @@ export default function Navbar() {
   const navLinks = [
     { label: "HOME", type: "home" },
     { label: "ABOUT", type: "scroll", target: "about" },
-    { label: "SPONSORS", type: "page", target: "/sponsors" },
+    { label: "PARTNERS", type: "page", target: "/partners" },
     { label: "EDITIONS", type: "page", target: "/editions" },
     { label: "AMBASSADORS", type: "page", target: "/ambassadors" }, // ✅ ADDED
   ];

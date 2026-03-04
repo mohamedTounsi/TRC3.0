@@ -8,6 +8,24 @@ import Link from "next/link";
 
 const partners = [
   {
+    name: "Tunisia Section Entrepreneurship Local Group",
+    logo: "/partners/ent.png",
+    description:
+      "A group within IEEE Tunisia focused on promoting innovation and startup culture by organizing entrepreneurship workshops, mentorship programs, and business-oriented training for members.",
+    website: "#",
+    category: "Technical Partner",
+    since: "2020",
+  },
+  {
+    name: "CN Tunisia Section",
+    logo: "/partners/cn.png",
+    description:
+      "A professional network within the IEEE Tunisia Section that connects experienced engineers and technical experts with companies and institutions, promoting consulting opportunities, knowledge exchange, and industry collaboration in Tunisia.",
+    website: "#",
+    category: "Technical Partner",
+    since: "2020",
+  },
+  {
     name: "IAS Tunisia Section Chapter",
     logo: "/partners/ias.webp",
     description:
@@ -183,16 +201,6 @@ export default function PartnersPage() {
 
                   {/* Content */}
                   <div className="flex-1 flex flex-col space-y-4">
-                    {/* Category and Year */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-[10px] font-light tracking-[0.2em] text-white/30 uppercase">
-                        {partner.category}
-                      </span>
-                      <span className="text-[10px] font-light text-white/20">
-                        {partner.since}
-                      </span>
-                    </div>
-
                     {/* Title */}
                     <h2 className="text-base font-light text-white/80 leading-relaxed">
                       {partner.name}

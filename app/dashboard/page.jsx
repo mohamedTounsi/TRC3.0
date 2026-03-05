@@ -12,14 +12,24 @@ import {
   XCircle,
   ShieldCheck,
   Trash2,
+  Download,
+  Filter,
+  User,
+  Users2,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 export default function DashboardPage() {
   const [passwordInput, setPasswordInput] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
   const [registrations, setRegistrations] = useState([]);
   const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor'
+  const [sortOrder, setSortOrder] = useState("desc"); // 'desc' (newest first) or 'asc' (oldest first)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
@@ -93,6 +103,47 @@ export default function DashboardPage() {
     }
   };
 
+  const exportToCSV = async () => {
+    setExportLoading(true);
+    try {
+      const response = await fetch(`/api/export?type=${filterType}`, {
+        headers: {
+          "x-dashboard-password": process.env.NEXT_PUBLIC_DASHBOARD_PASSWORD,
+        },
+      });
+
+      if (!response.ok) throw new Error("Export failed");
+
+      const contentDisposition = response.headers.get("Content-Disposition");
+      const filename = contentDisposition
+        ? contentDisposition.split("filename=")[1]
+        : `registrations-${filterType}-${
+            new Date().toISOString().split("T")[0]
+          }.csv`;
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      toast.success(`Exported ${filterType} registrations successfully!`);
+    } catch (err) {
+      toast.error("Failed to export data");
+      console.error(err);
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+  };
+
   useEffect(() => {
     if (!authenticated) return;
 
@@ -116,14 +167,47 @@ export default function DashboardPage() {
     fetchRegistrations();
   }, [authenticated]);
 
-  const filteredRegistrations = registrations.filter((reg) =>
-    `${reg.fullName} ${reg.email} ${reg.phoneNumber} ${reg.universityName} ${reg.teamName} ${reg.ieeeSB} ${reg.ieeeId}`
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  // Apply filters and sorting
+  const processedRegistrations = registrations
+    // First filter by type
+    .filter((reg) => {
+      if (filterType === "challenger") return reg.isChallenger === true;
+      if (filterType === "visitor") return reg.isChallenger === false;
+      return true;
+    })
+    // Then filter by search
+    .filter((reg) =>
+      `${reg.fullName} ${reg.email} ${reg.phoneNumber} ${reg.universityName} ${reg.teamName} ${reg.ieeeSB} ${reg.ieeeId}`
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    )
+    // Then sort by createdAt
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
 
-  const paidCount = registrations.filter((r) => r.paid).length;
-  const unpaidCount = registrations.length - paidCount;
+  const paidCount = processedRegistrations.filter((r) => r.paid).length;
+  const unpaidCount = processedRegistrations.length - paidCount;
+  const challengerCount = processedRegistrations.filter(
+    (r) => r.isChallenger
+  ).length;
+  const visitorCount = processedRegistrations.filter(
+    (r) => !r.isChallenger
+  ).length;
+
+  const getSortIcon = () => {
+    if (sortOrder === "desc") {
+      return <ArrowDown size={14} />;
+    } else {
+      return <ArrowUp size={14} />;
+    }
+  };
+
+  const getSortText = () => {
+    return sortOrder === "desc" ? "Newest First" : "Oldest First";
+  };
 
   if (!authenticated) {
     return (
@@ -407,6 +491,107 @@ export default function DashboardPage() {
           margin: 0 0 28px;
         }
 
+        /* Filter Bar */
+        .filter-bar {
+          display: flex;
+          gap: 16px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .filter-group {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .filter-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 18px;
+          background: transparent;
+          border: 1px solid rgba(239,176,115,0.2);
+          border-radius: 4px;
+          color: rgba(255,255,255,0.5);
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+          border-color: #efb073;
+          color: #efb073;
+          background: rgba(239,176,115,0.08);
+        }
+
+        .filter-btn:hover {
+          border-color: rgba(239,176,115,0.5);
+          color: #efb073;
+        }
+
+        .sort-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 18px;
+          background: transparent;
+          border: 1px solid rgba(239,176,115,0.2);
+          border-radius: 4px;
+          color: #efb073;
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .sort-btn:hover {
+          border-color: rgba(239,176,115,0.5);
+          background: rgba(239,176,115,0.04);
+        }
+
+        .sort-indicator {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin-left: 4px;
+        }
+
+        .export-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 22px;
+          background: rgba(239,176,115,0.1);
+          border: 1px solid rgba(239,176,115,0.3);
+          border-radius: 4px;
+          color: #efb073;
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .export-btn:hover:not(:disabled) {
+          background: rgba(239,176,115,0.2);
+          border-color: #efb073;
+        }
+
+        .export-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
         .search-wrap {
           position: relative;
           margin-bottom: 28px;
@@ -458,14 +643,20 @@ export default function DashboardPage() {
 
         .stats-row {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(5, 1fr);
           gap: 16px;
           margin-bottom: 28px;
         }
 
+        @media (max-width: 768px) {
+          .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
         @media (max-width: 480px) {
           .stats-row {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 10px;
           }
         }
@@ -486,8 +677,6 @@ export default function DashboardPage() {
           .stat-card {
             padding: 14px 12px;
             gap: 10px;
-            flex-direction: column;
-            align-items: flex-start;
           }
         }
 
@@ -504,13 +693,6 @@ export default function DashboardPage() {
           color: #efb073;
           opacity: 0.7;
           flex-shrink: 0;
-        }
-
-        @media (max-width: 600px) {
-          .stat-icon {
-            width: 16px;
-            height: 16px;
-          }
         }
 
         .stat-label {
@@ -535,7 +717,7 @@ export default function DashboardPage() {
           }
         }
 
-        /* ── TABLE (desktop ≥ 769px) ── */
+        /* Table styles */
         .table-wrap {
           background: rgba(255,255,255,0.02);
           border: 1px solid rgba(239,176,115,0.1);
@@ -563,6 +745,22 @@ export default function DashboardPage() {
           font-size: 10px;
           text-align: left;
           white-space: nowrap;
+        }
+
+        .dash-table th.sortable {
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+
+        .dash-table th.sortable:hover {
+          color: #efb073;
+        }
+
+        .dash-table th .sort-indicator {
+          display: inline-flex;
+          align-items: center;
+          margin-left: 6px;
+          opacity: 0.7;
         }
 
         .dash-table tbody tr {
@@ -593,7 +791,28 @@ export default function DashboardPage() {
           font-size: 11px;
         }
 
-        /* ── MOBILE CARDS (≤ 768px) ── */
+        .type-badge {
+          display: inline-block;
+          padding: 3px 8px;
+          border-radius: 2px;
+          font-size: 9px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        .type-badge.challenger {
+          background: rgba(239,176,115,0.15);
+          color: #efb073;
+          border: 1px solid rgba(239,176,115,0.3);
+        }
+
+        .type-badge.visitor {
+          background: rgba(100,116,139,0.15);
+          color: #94a3b8;
+          border: 1px solid rgba(148,163,184,0.3);
+        }
+
+        /* Mobile cards */
         .mobile-cards {
           display: none;
         }
@@ -715,7 +934,6 @@ export default function DashboardPage() {
           gap: 8px;
         }
 
-        /* Shared badge/button styles */
         .badge-paid {
           display: inline-flex;
           align-items: center;
@@ -805,7 +1023,6 @@ export default function DashboardPage() {
           to { transform: rotate(360deg); }
         }
 
-        /* ── DELETE MODAL ── */
         .modal-overlay {
           position: fixed;
           inset: 0;
@@ -929,7 +1146,6 @@ export default function DashboardPage() {
           border-color: #f87171;
         }
 
-        /* IEEE badge */
         .ieee-yes {
           color: #efb073;
           font-size: 10px;
@@ -942,7 +1158,6 @@ export default function DashboardPage() {
       `}</style>
 
       <div className="dash-root">
-        {/* Header */}
         <div className="dash-header-bar">
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <span className="dash-header-title">Admin Dashboard</span>
@@ -957,6 +1172,64 @@ export default function DashboardPage() {
         <div className="dash-content">
           <h1 className="dash-page-title">Registrations</h1>
           <p className="dash-page-sub">All participant records</p>
+
+          {/* Filter Bar with Sort */}
+          <div className="filter-bar">
+            <div className="filter-group">
+              <button
+                className={`filter-btn ${filterType === "all" ? "active" : ""}`}
+                onClick={() => setFilterType("all")}
+              >
+                <Users2 size={14} />
+                All
+              </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "challenger" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("challenger")}
+              >
+                <User size={14} />
+                Challengers
+              </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "visitor" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("visitor")}
+              >
+                <Users size={14} />
+                Visitors
+              </button>
+
+              {/* Sort Button */}
+              <button
+                className="sort-btn"
+                onClick={toggleSortOrder}
+                title={getSortText()}
+              >
+                <ArrowUpDown size={14} />
+                Sort
+                <span className="sort-indicator">{getSortIcon()}</span>
+              </button>
+            </div>
+
+            <button
+              className="export-btn"
+              onClick={exportToCSV}
+              disabled={exportLoading || processedRegistrations.length === 0}
+            >
+              {exportLoading ? (
+                <Loader2
+                  size={14}
+                  style={{ animation: "spin 1s linear infinite" }}
+                />
+              ) : (
+                <Download size={14} />
+              )}
+              Export {filterType !== "all" ? filterType : ""} CSV
+            </button>
+          </div>
 
           {/* Search */}
           <div className="search-wrap">
@@ -981,8 +1254,8 @@ export default function DashboardPage() {
             />
             {search && (
               <span className="search-count">
-                {filteredRegistrations.length} result
-                {filteredRegistrations.length !== 1 ? "s" : ""}
+                {processedRegistrations.length} result
+                {processedRegistrations.length !== 1 ? "s" : ""}
               </span>
             )}
           </div>
@@ -991,10 +1264,24 @@ export default function DashboardPage() {
           {!loading && (
             <div className="stats-row">
               <div className="stat-card">
-                <Users size={20} className="stat-icon" />
+                <Users2 size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Total</p>
-                  <p className="stat-value">{registrations.length}</p>
+                  <p className="stat-value">{processedRegistrations.length}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <User size={20} className="stat-icon" />
+                <div>
+                  <p className="stat-label">Challengers</p>
+                  <p className="stat-value">{challengerCount}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <Users size={20} className="stat-icon" />
+                <div>
+                  <p className="stat-label">Visitors</p>
+                  <p className="stat-value">{visitorCount}</p>
                 </div>
               </div>
               <div className="stat-card">
@@ -1014,6 +1301,34 @@ export default function DashboardPage() {
             </div>
           )}
 
+          {/* Sort Info Bar */}
+          {!loading && processedRegistrations.length > 0 && (
+            <div
+              style={{
+                marginBottom: "16px",
+                fontSize: "11px",
+                color: "rgba(239,176,115,0.5)",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <span>Sorted by:</span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  color: "#efb073",
+                }}
+              >
+                Registration Date
+                {getSortIcon()}
+              </span>
+              <span>({getSortText()})</span>
+            </div>
+          )}
+
           {/* Content */}
           <div className="table-wrap">
             {loading ? (
@@ -1027,15 +1342,17 @@ export default function DashboardPage() {
                 />
                 <span>Loading records...</span>
               </div>
-            ) : filteredRegistrations.length === 0 ? (
+            ) : processedRegistrations.length === 0 ? (
               <div className="empty-state">
                 {search
                   ? `No results for "${search}"`
-                  : "No registrations found"}
+                  : `No ${
+                      filterType !== "all" ? filterType : ""
+                    } registrations found`}
               </div>
             ) : (
               <>
-                {/* ── DESKTOP TABLE ── */}
+                {/* Desktop Table */}
                 <div
                   className="desktop-table-scroll"
                   style={{ overflowX: "auto" }}
@@ -1044,22 +1361,37 @@ export default function DashboardPage() {
                     <thead>
                       <tr>
                         <th>#</th>
+                        <th>Type</th>
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Phone</th>
                         <th>IEEE</th>
                         <th>SB / ID / University</th>
-                        <th>Challenger / Team</th>
+                        <th>Team</th>
                         <th>Payment</th>
                         <th>Delete</th>
-                        <th>Registered At</th>
+                        <th className="sortable" onClick={toggleSortOrder}>
+                          Registered At
+                          <span className="sort-indicator">
+                            {getSortIcon()}
+                          </span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredRegistrations.map((reg, index) => (
+                      {processedRegistrations.map((reg, index) => (
                         <tr key={reg._id}>
                           <td className="index-cell dim">
                             {String(index + 1).padStart(2, "0")}
+                          </td>
+                          <td>
+                            <span
+                              className={`type-badge ${
+                                reg.isChallenger ? "challenger" : "visitor"
+                              }`}
+                            >
+                              {reg.isChallenger ? "CHALLENGER" : "VISITOR"}
+                            </span>
                           </td>
                           <td style={{ color: "#f0ece4", fontWeight: 400 }}>
                             {reg.fullName}
@@ -1075,11 +1407,13 @@ export default function DashboardPage() {
                           </td>
                           <td className="dim">
                             {reg.isIEEEMember
-                              ? `${reg.ieeeSB} / ${reg.ieeeId}`
-                              : reg.universityName}
+                              ? `${reg.ieeeSB || ""} ${
+                                  reg.ieeeId ? "/ " + reg.ieeeId : ""
+                                }`
+                              : reg.universityName || "—"}
                           </td>
                           <td className="dim">
-                            {reg.isChallenger ? reg.teamName : "—"}
+                            {reg.isChallenger ? reg.teamName || "—" : "—"}
                           </td>
                           <td>
                             {reg.paid ? (
@@ -1118,9 +1452,9 @@ export default function DashboardPage() {
                   </table>
                 </div>
 
-                {/* ── MOBILE CARDS ── */}
+                {/* Mobile Cards */}
                 <div className="mobile-cards">
-                  {filteredRegistrations.map((reg, index) => (
+                  {processedRegistrations.map((reg, index) => (
                     <div className="reg-card" key={reg._id}>
                       <div className="reg-card-header">
                         <span className="reg-card-name">{reg.fullName}</span>
@@ -1130,6 +1464,17 @@ export default function DashboardPage() {
                       </div>
 
                       <div className="reg-card-grid">
+                        <div className="reg-card-field full-width">
+                          <span className="reg-field-label">Type</span>
+                          <span
+                            className={`type-badge ${
+                              reg.isChallenger ? "challenger" : "visitor"
+                            }`}
+                          >
+                            {reg.isChallenger ? "CHALLENGER" : "VISITOR"}
+                          </span>
+                        </div>
+
                         <div className="reg-card-field full-width">
                           <span className="reg-field-label">Email</span>
                           <span className="reg-field-value dim">
@@ -1183,7 +1528,7 @@ export default function DashboardPage() {
                           <div className="reg-card-field full-width">
                             <span className="reg-field-label">Team</span>
                             <span className="reg-field-value">
-                              {reg.teamName}
+                              {reg.teamName || "—"}
                             </span>
                           </div>
                         )}

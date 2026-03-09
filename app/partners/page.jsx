@@ -26,6 +26,15 @@ const partners = [
     since: "2020",
   },
   {
+    name: "CEDA Tunisia chapter",
+    logo: "/partners/ceda.png",
+    description:
+      "A vibrant global community of researchers, academics, and engineers focused on advancing system and circuit design automation through the theory, development, and application of innovative design tools.",
+    website: "#",
+    category: "Technical Partner",
+    since: "2020",
+  },
+  {
     name: "IAS Tunisia Section Chapter",
     logo: "/partners/ias.webp",
     description:

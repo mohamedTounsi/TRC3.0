@@ -19,6 +19,10 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  Lock,
+  Unlock,
+  DollarSign,
+  CreditCard,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -31,6 +35,7 @@ export default function DashboardPage() {
   const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor'
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' (newest first) or 'asc' (oldest first)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [searchLocked, setSearchLocked] = useState(false);
 
   useEffect(() => {
     const session = sessionStorage.getItem("dashboard_auth");
@@ -106,18 +111,25 @@ export default function DashboardPage() {
   const exportToCSV = async () => {
     setExportLoading(true);
     try {
-      const response = await fetch(`/api/export?type=${filterType}`, {
-        headers: {
-          "x-dashboard-password": process.env.NEXT_PUBLIC_DASHBOARD_PASSWORD,
-        },
-      });
+      // Use current search and filter for export
+      const searchParam = searchLocked ? search : "";
+      const response = await fetch(
+        `/api/export?type=${filterType}&search=${encodeURIComponent(
+          searchParam
+        )}`,
+        {
+          headers: {
+            "x-dashboard-password": process.env.NEXT_PUBLIC_DASHBOARD_PASSWORD,
+          },
+        }
+      );
 
       if (!response.ok) throw new Error("Export failed");
 
       const contentDisposition = response.headers.get("Content-Disposition");
       const filename = contentDisposition
         ? contentDisposition.split("filename=")[1]
-        : `registrations-${filterType}-${
+        : `registrations-${filterType}${searchParam ? `-${searchParam}` : ""}-${
             new Date().toISOString().split("T")[0]
           }.csv`;
 
@@ -131,7 +143,11 @@ export default function DashboardPage() {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      toast.success(`Exported ${filterType} registrations successfully!`);
+      toast.success(
+        `Exported ${filterType} registrations${
+          searchParam ? ` matching "${searchParam}"` : ""
+        } successfully!`
+      );
     } catch (err) {
       toast.error("Failed to export data");
       console.error(err);
@@ -175,14 +191,36 @@ export default function DashboardPage() {
       if (filterType === "visitor") return reg.isChallenger === false;
       return true;
     })
-    // Then filter by search
-    .filter((reg) =>
-      `${reg.fullName} ${reg.email} ${reg.phoneNumber} ${reg.universityName} ${reg.teamName} ${reg.ieeeSB} ${reg.ieeeId}`
+    // Then filter by search (only if not locked or if locked but search exists)
+    .filter((reg) => {
+      if (!search || searchLocked) return true;
+      return `${reg.fullName} ${reg.email} ${reg.phoneNumber} ${reg.universityName} ${reg.teamName} ${reg.ieeeSB} ${reg.ieeeId}`
         .toLowerCase()
-        .includes(search.toLowerCase())
-    )
-    // Then sort by createdAt
+        .includes(search.toLowerCase());
+    })
+    // Then sort
     .sort((a, b) => {
+      // For challengers view, sort by team name first (case insensitive)
+      if (filterType === "challenger") {
+        const teamA = (a.teamName || "").toLowerCase();
+        const teamB = (b.teamName || "").toLowerCase();
+
+        // If both have team names, sort by team name
+        if (teamA && teamB) {
+          if (teamA < teamB) return -1;
+          if (teamA > teamB) return 1;
+        }
+        // Put entries without team names at the end
+        if (!teamA && teamB) return 1;
+        if (teamA && !teamB) return -1;
+
+        // If same team or no teams, sort by registration date
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+      }
+
+      // For visitors and all view, sort by registration date
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();
       return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
@@ -206,7 +244,18 @@ export default function DashboardPage() {
   };
 
   const getSortText = () => {
+    if (filterType === "challenger") {
+      return sortOrder === "desc" ? "Team Name (A-Z)" : "Team Name (Z-A)";
+    }
     return sortOrder === "desc" ? "Newest First" : "Oldest First";
+  };
+
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    return {
+      date: date.toLocaleDateString(),
+      time: date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
   };
 
   if (!authenticated) {
@@ -458,7 +507,7 @@ export default function DashboardPage() {
 
         .dash-content {
           padding: 88px 32px 48px;
-          max-width: 1400px;
+          max-width: 1600px;
           margin: 0 auto;
         }
 
@@ -599,7 +648,7 @@ export default function DashboardPage() {
 
         .search-input {
           width: 100%;
-          padding: 12px 16px 12px 42px;
+          padding: 12px 90px 12px 42px;
           background: rgba(255,255,255,0.03);
           border: 1px solid rgba(239,176,115,0.15);
           border-radius: 4px;
@@ -631,14 +680,39 @@ export default function DashboardPage() {
           pointer-events: none;
         }
 
+        .search-lock {
+          position: absolute;
+          right: 60px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: transparent;
+          border: none;
+          color: rgba(239,176,115,0.4);
+          cursor: pointer;
+          padding: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.2s;
+        }
+
+        .search-lock:hover {
+          color: #efb073;
+        }
+
+        .search-lock.locked {
+          color: #efb073;
+        }
+
         .search-count {
           position: absolute;
-          right: 14px;
+          right: 100px;
           top: 50%;
           transform: translateY(-50%);
           color: rgba(239,176,115,0.4);
           font-size: 11px;
           letter-spacing: 0.1em;
+          pointer-events: none;
         }
 
         .stats-row {
@@ -728,7 +802,7 @@ export default function DashboardPage() {
         .dash-table {
           width: 100%;
           border-collapse: collapse;
-          font-size: 12px;
+          font-size: 11px;
         }
 
         .dash-table thead tr {
@@ -737,12 +811,12 @@ export default function DashboardPage() {
         }
 
         .dash-table th {
-          padding: 14px 16px;
+          padding: 12px 10px;
           color: rgba(239,176,115,0.7);
           font-weight: 400;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          font-size: 10px;
+          font-size: 9px;
           text-align: left;
           white-space: nowrap;
         }
@@ -777,7 +851,7 @@ export default function DashboardPage() {
         }
 
         .dash-table td {
-          padding: 14px 16px;
+          padding: 10px;
           color: rgba(255,255,255,0.75);
           white-space: nowrap;
         }
@@ -788,7 +862,31 @@ export default function DashboardPage() {
 
         .index-cell {
           color: rgba(239,176,115,0.4);
-          font-size: 11px;
+          font-size: 10px;
+          width: 35px;
+        }
+
+        .type-badge-mini {
+          display: inline-block;
+          padding: 2px 6px;
+          border-radius: 2px;
+          font-size: 8px;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          text-align: center;
+          min-width: 30px;
+        }
+
+        .type-badge-mini.challenger {
+          background: rgba(239,176,115,0.2);
+          color: #efb073;
+          border: 1px solid rgba(239,176,115,0.3);
+        }
+
+        .type-badge-mini.visitor {
+          background: rgba(100,116,139,0.15);
+          color: #94a3b8;
+          border: 1px solid rgba(148,163,184,0.3);
         }
 
         .type-badge {
@@ -812,12 +910,59 @@ export default function DashboardPage() {
           border: 1px solid rgba(148,163,184,0.3);
         }
 
+        .payment-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border-radius: 2px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .payment-icon.paid {
+          background: rgba(34,197,94,0.1);
+          border: 1px solid rgba(34,197,94,0.25);
+          color: #4ade80;
+        }
+
+        .payment-icon.paid:hover {
+          background: rgba(34,197,94,0.15);
+          border-color: #4ade80;
+        }
+
+        .payment-icon.unpaid {
+          background: transparent;
+          border: 1px solid rgba(239,68,68,0.3);
+          color: #f87171;
+        }
+
+        .payment-icon.unpaid:hover {
+          background: rgba(239,68,68,0.1);
+          border-color: #f87171;
+        }
+
+        .date-cell {
+          line-height: 1.3;
+        }
+
+        .date-cell .date {
+          font-size: 10px;
+          color: rgba(255,255,255,0.6);
+        }
+
+        .date-cell .time {
+          font-size: 8px;
+          color: rgba(255,255,255,0.3);
+        }
+
         /* Mobile cards */
         .mobile-cards {
           display: none;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1000px) {
           .desktop-table-scroll {
             display: none;
           }
@@ -1231,7 +1376,7 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* Search */}
+          {/* Search with Lock */}
           <div className="search-wrap">
             <svg
               className="search-icon"
@@ -1252,6 +1397,17 @@ export default function DashboardPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="search-input"
             />
+            <button
+              className={`search-lock ${searchLocked ? "locked" : ""}`}
+              onClick={() => setSearchLocked(!searchLocked)}
+              title={
+                searchLocked
+                  ? "Unlock search for filtering"
+                  : "Lock search for export"
+              }
+            >
+              {searchLocked ? <Lock size={14} /> : <Unlock size={14} />}
+            </button>
             {search && (
               <span className="search-count">
                 {processedRegistrations.length} result
@@ -1322,7 +1478,9 @@ export default function DashboardPage() {
                   color: "#efb073",
                 }}
               >
-                Registration Date
+                {filterType === "challenger"
+                  ? "Team Name"
+                  : "Registration Date"}
                 {getSortIcon()}
               </span>
               <span>({getSortText()})</span>
@@ -1371,7 +1529,7 @@ export default function DashboardPage() {
                         <th>Payment</th>
                         <th>Delete</th>
                         <th className="sortable" onClick={toggleSortOrder}>
-                          Registered At
+                          Registered
                           <span className="sort-indicator">
                             {getSortIcon()}
                           </span>
@@ -1379,75 +1537,105 @@ export default function DashboardPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {processedRegistrations.map((reg, index) => (
-                        <tr key={reg._id}>
-                          <td className="index-cell dim">
-                            {String(index + 1).padStart(2, "0")}
-                          </td>
-                          <td>
-                            <span
-                              className={`type-badge ${
-                                reg.isChallenger ? "challenger" : "visitor"
-                              }`}
-                            >
-                              {reg.isChallenger ? "CHALLENGER" : "VISITOR"}
-                            </span>
-                          </td>
-                          <td style={{ color: "#f0ece4", fontWeight: 400 }}>
-                            {reg.fullName}
-                          </td>
-                          <td className="dim">{reg.email}</td>
-                          <td className="dim">{reg.phoneNumber}</td>
-                          <td>
-                            {reg.isIEEEMember ? (
-                              <span className="ieee-yes">YES</span>
-                            ) : (
-                              <span className="ieee-no">NO</span>
-                            )}
-                          </td>
-                          <td className="dim">
-                            {reg.isIEEEMember
-                              ? `${reg.ieeeSB || ""} ${
-                                  reg.ieeeId ? "/ " + reg.ieeeId : ""
-                                }`
-                              : reg.universityName || "—"}
-                          </td>
-                          <td className="dim">
-                            {reg.isChallenger ? reg.teamName || "—" : "—"}
-                          </td>
-                          <td>
-                            {reg.paid ? (
-                              <button
-                                onClick={() => togglePaid(reg._id)}
-                                className="badge-paid"
-                                title="Click to mark as unpaid"
+                      {processedRegistrations.map((reg, index) => {
+                        const { date, time } = formatDateTime(reg.createdAt);
+                        return (
+                          <tr key={reg._id}>
+                            <td className="index-cell dim">
+                              {String(index + 1).padStart(2, "0")}
+                            </td>
+                            <td>
+                              <span
+                                className={`type-badge-mini ${
+                                  reg.isChallenger ? "challenger" : "visitor"
+                                }`}
                               >
-                                <CheckCircle size={10} /> Paid
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => togglePaid(reg._id)}
-                                className="btn-unpaid"
-                                title="Click to mark as paid"
-                              >
-                                <XCircle size={10} /> Unpaid
-                              </button>
-                            )}
-                          </td>
-                          <td>
-                            <button
-                              onClick={() => confirmDelete(reg._id)}
-                              className="btn-delete"
-                              title="Delete registration"
+                                {reg.isChallenger ? "CH" : "V"}
+                              </span>
+                            </td>
+                            <td
+                              style={{
+                                color: "#f0ece4",
+                                fontWeight: 400,
+                                whiteSpace: "nowrap",
+                              }}
                             >
-                              <Trash2 size={13} />
-                            </button>
-                          </td>
-                          <td className="dim" style={{ fontSize: "11px" }}>
-                            {new Date(reg.createdAt).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
+                              {reg.fullName}
+                            </td>
+                            <td className="dim" style={{ fontSize: "10px" }}>
+                              {reg.email}
+                            </td>
+                            <td className="dim" style={{ fontSize: "10px" }}>
+                              {reg.phoneNumber}
+                            </td>
+                            <td>
+                              {reg.isIEEEMember ? (
+                                <span className="ieee-yes">YES</span>
+                              ) : (
+                                <span className="ieee-no">NO</span>
+                              )}
+                            </td>
+                            <td
+                              className="dim"
+                              style={{
+                                fontSize: "10px",
+                                maxWidth: "150px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {reg.isIEEEMember
+                                ? `${reg.ieeeSB || ""} ${
+                                    reg.ieeeId ? "/ " + reg.ieeeId : ""
+                                  }`
+                                : reg.universityName || "—"}
+                            </td>
+                            <td
+                              className="dim"
+                              style={{
+                                fontSize: "10px",
+                                maxWidth: "100px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {reg.isChallenger ? reg.teamName || "—" : "—"}
+                            </td>
+                            <td>
+                              {reg.paid ? (
+                                <button
+                                  onClick={() => togglePaid(reg._id)}
+                                  className="payment-icon paid"
+                                  title="Click to mark as unpaid"
+                                >
+                                  <DollarSign size={14} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => togglePaid(reg._id)}
+                                  className="payment-icon unpaid"
+                                  title="Click to mark as paid"
+                                >
+                                  <CreditCard size={14} />
+                                </button>
+                              )}
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => confirmDelete(reg._id)}
+                                className="btn-delete"
+                                title="Delete registration"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </td>
+                            <td className="date-cell">
+                              <div className="date">{date}</div>
+                              <div className="time">{time}</div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

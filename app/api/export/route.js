@@ -3,8 +3,9 @@ import Registration from "@/models/Registration";
 
 export async function GET(request) {
   try {
-    // Check authorization
+    // Authorization check
     const password = request.headers.get("x-dashboard-password");
+
     if (password !== process.env.NEXT_PUBLIC_DASHBOARD_PASSWORD) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -16,20 +17,25 @@ export async function GET(request) {
 
     // Get query params
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type"); // all | challenger | visitor
+    const type = searchParams.get("type") || "all";
     const search = searchParams.get("search") || "";
 
     let query = {};
 
+    // 🎯 FILTERING
     if (type === "challenger") {
       query.isChallenger = true;
     } else if (type === "visitor") {
       query.isChallenger = false;
+    } else if (type === "paid") {
+      query.paid = true;
+    } else if (type === "unpaid") {
+      query.paid = false;
     }
 
     let registrations = await Registration.find(query);
 
-    // 🔎 Apply search filter (ISIMS example)
+    // 🔎 SEARCH FILTER
     if (search) {
       const s = search.toLowerCase();
 
@@ -40,9 +46,8 @@ export async function GET(request) {
       );
     }
 
-    // 📊 Sorting
+    // 📊 SORTING
     if (type === "challenger") {
-      // Sort by team name
       registrations.sort((a, b) => {
         const teamA = (a.teamName || "").toLowerCase();
         const teamB = (b.teamName || "").toLowerCase();
@@ -53,13 +58,12 @@ export async function GET(request) {
         return new Date(a.createdAt) - new Date(b.createdAt);
       });
     } else {
-      // Normal sort by newest
       registrations.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
     }
 
-    // CSV headers
+    // 📄 CSV HEADERS
     const headers = [
       "Full Name",
       "Email",
@@ -74,6 +78,7 @@ export async function GET(request) {
       "Registered At",
     ];
 
+    // 📄 CSV ROWS
     const rows = registrations.map((reg) => [
       `"${reg.fullName || ""}"`,
       `"${reg.email || ""}"`,
@@ -88,9 +93,10 @@ export async function GET(request) {
       new Date(reg.createdAt).toLocaleString(),
     ]);
 
-    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join(
-      "\n"
-    );
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
 
     return new Response(csvContent, {
       status: 200,

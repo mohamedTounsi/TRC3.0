@@ -16,6 +16,7 @@ export default function Navbar() {
     { label: "HOME", type: "home" },
     { label: "ABOUT", type: "scroll", target: "about" },
     { label: "PARTNERS", type: "page", target: "/partners" },
+    { label: "SPONSORS", type: "page", target: "/sponsors" },
     { label: "EDITIONS", type: "page", target: "/editions" },
     { label: "AMBASSADORS", type: "page", target: "/ambassadors" }, // ✅ ADDED
   ];

@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const [exportLoading, setExportLoading] = useState(false);
   const [registrations, setRegistrations] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor'
+  const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor', 'paid', 'unpaid'
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' (newest first) or 'asc' (oldest first)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [searchLocked, setSearchLocked] = useState(false);
@@ -185,10 +185,12 @@ export default function DashboardPage() {
 
   // Apply filters and sorting
   const processedRegistrations = registrations
-    // First filter by type
+    // First filter by type and payment status
     .filter((reg) => {
       if (filterType === "challenger") return reg.isChallenger === true;
       if (filterType === "visitor") return reg.isChallenger === false;
+      if (filterType === "paid") return reg.paid === true;
+      if (filterType === "unpaid") return reg.paid === false;
       return true;
     })
     // Then filter by search (only if not locked or if locked but search exists)
@@ -745,6 +747,18 @@ export default function DashboardPage() {
           gap: 16px;
           position: relative;
           overflow: hidden;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+          border-color: rgba(239,176,115,0.3);
+          background: rgba(239,176,115,0.02);
+        }
+
+        .stat-card.active {
+          border-color: #efb073;
+          background: rgba(239,176,115,0.08);
         }
 
         @media (max-width: 600px) {
@@ -1346,6 +1360,24 @@ export default function DashboardPage() {
                 <Users size={14} />
                 Visitors
               </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "paid" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("paid")}
+              >
+                <CheckCircle size={14} />
+                Paid
+              </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "unpaid" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("unpaid")}
+              >
+                <XCircle size={14} />
+                Unpaid
+              </button>
 
               {/* Sort Button */}
               <button
@@ -1419,35 +1451,56 @@ export default function DashboardPage() {
           {/* Stats */}
           {!loading && (
             <div className="stats-row">
-              <div className="stat-card">
+              <div
+                className={`stat-card ${filterType === "all" ? "active" : ""}`}
+                onClick={() => setFilterType("all")}
+              >
                 <Users2 size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Total</p>
                   <p className="stat-value">{processedRegistrations.length}</p>
                 </div>
               </div>
-              <div className="stat-card">
+              <div
+                className={`stat-card ${
+                  filterType === "challenger" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("challenger")}
+              >
                 <User size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Challengers</p>
                   <p className="stat-value">{challengerCount}</p>
                 </div>
               </div>
-              <div className="stat-card">
+              <div
+                className={`stat-card ${
+                  filterType === "visitor" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("visitor")}
+              >
                 <Users size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Visitors</p>
                   <p className="stat-value">{visitorCount}</p>
                 </div>
               </div>
-              <div className="stat-card">
+              <div
+                className={`stat-card ${filterType === "paid" ? "active" : ""}`}
+                onClick={() => setFilterType("paid")}
+              >
                 <CheckCircle size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Paid</p>
                   <p className="stat-value">{paidCount}</p>
                 </div>
               </div>
-              <div className="stat-card">
+              <div
+                className={`stat-card ${
+                  filterType === "unpaid" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("unpaid")}
+              >
                 <XCircle size={20} className="stat-icon" />
                 <div>
                   <p className="stat-label">Unpaid</p>

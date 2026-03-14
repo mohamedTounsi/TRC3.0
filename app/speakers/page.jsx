@@ -9,55 +9,34 @@ import Link from "next/link";
 // Panelists - 3 people
 const panelists = [
   {
+    name: "Mr. Farouk Chwayakh",
+    organization: "KPIT Tunisia Center",
+
+    points: ["HR Buisiness Partner at KPIT Tunisia Center"],
+    image: "/speakers/farouk.png",
+  },
+  {
     name: "Mrs. Amira Ouerfelli",
-    title: "Electrical and Automation Engineer",
     organization: "SIGHT Tunisia Section CHAIR",
     chapter: "SIGHT Tunisia Section Group",
     chapterIcon: "/partners/sight.svg",
     points: [
-      "IEEE MGA Representative, HTB (2026)",
-      "IEEE HTB SIGHT Chair (2026)",
-      "IEEE HTAC Region 8 Member (2026)",
-      "IEEE SIGHT Tunisia Section Chair (2025–2026)",
-      "Humanitarian Technologies Coordinator, IEEE Tunisia Section (2025–2026)",
-      "Co-Chair, Implementation Committee for Education, IEEE Smart Village Global (2025–2026)",
-      "IAS WIE Region 8 Representative (2025–2026)",
+      "Electrical and Automation Engineer",
+      "IEEE SIGHT Tunisia Section CHAIR",
     ],
     image: "/speakers/amira.png",
   },
   {
-    name: "Prof. Ahmed Hassan",
-    title: "Professor of Robotics",
-    organization: "Tunisia Polytechnic School",
-    chapter: "IES Tunisia Section Chapter",
-    chapterIcon: "/partners/ies.webp",
-    points: [
-      "Expert in industrial automation systems",
-      "Led 5 EU-funded robotics projects",
-      "Founder of Tunisia AI Hub",
-      "Published 60+ research papers",
-      "Supervised 15 PhD students",
-      "Holder of 8 patents",
-      "IEEE Robotics Award 2023",
-    ],
-    image: "/speakers/amenallah.png",
-  },
-  {
-    name: "Dr. Maya Ben Ali",
-    title: "Chief Technology Officer",
+    name: "Mr. Farouk Zlitni ",
     organization: "InnovX Labs",
     chapter: "WIE Tunisia Section AG",
     chapterIcon: "/partners/wie.png",
     points: [
-      "20+ years in embedded systems",
-      "Mentor for 50+ women in STEM",
-      "Author of 'Future of Edge Computing'",
-      "Former CTO at 2 tech unicorns",
-      "Forbes Top 50 Tech Leaders",
-      "MIT Technology Review Innovator",
-      "Board member at 3 tech foundations",
+      "Professor at ISIMS",
+      "Researcher at Miracl Laboratory ",
+      "Information Technology Consultant",
     ],
-    image: "/speakers/eyachaaben.png",
+    image: "/speakers/zlitini.png",
   },
 ];
 
@@ -65,11 +44,12 @@ const panelists = [
 const workshopSpeaker = {
   name: "Mr. Amir Zouenkhi",
   title: "From Model to Product Workshop",
-  chapter: "IAS Tunisia Section Chapter",
+  chapter: "IEEE IAS Tunisia Section Chapter",
   chapterIcon: "/partners/ias.webp",
   workshop: "From Model to Products: Integrating AI into Your Applications",
   workshopDate: "20:00 AM -21:30 PM",
-  registrationLink: "https://forms.example.com/workshop-registration",
+  registrationLink:
+    "https://docs.google.com/forms/d/e/1FAIpQLSeK2f-rDaVuSqtIWMXKkvi0mZOYnEsNAXxlQaBSJokQ_NrMcw/viewform",
   points: [
     "SOFTWARE EnGINEER",
     "IT CONSULTANT & SOFTWARE ARCHITECTURE SPECIALIST - SCALIA DEV ",
@@ -83,174 +63,161 @@ const workshopSpeaker = {
 // Speakers - 10 people
 const speakers = [
   {
-    name: "Elena Rodriguez",
-    title: "ML Engineering Lead",
+    name: "Ms. Eya Chaaben ",
+    title: "IEEE IAS Tunisia Section Chapter ",
     organization: "Spotify",
     chapter: "IAS Tunisia Section Chapter",
     chapterIcon: "/partners/ias.webp",
     points: [
-      "Leads personalization algorithms team",
-      "Ex-Google Brain researcher",
-      "PhD in Computational Neuroscience",
-      "Published 15 papers in top conferences",
-      "Speaker at NeurIPS 2023",
-      "Mentor at Women in ML",
-      "Open source contributor to TensorFlow",
+      "Software engineer student",
+      "Chair IEEE ISIMS SB 2024",
+      "IEEE IAS Tunisia Section Chapter's Student representative",
     ],
-    image: "/speakers/speaker1.jpg",
+    image: "/speakers/eyachaaben.png",
   },
   {
-    name: "Omar Mejri",
-    title: "Senior Robotics Engineer",
+    name: "Ms. Baya Bouchaala",
+    title: "IEEE WIE Tunisia Section AG",
     organization: "Boston Dynamics",
     chapter: "IES Tunisia Section Chapter",
     chapterIcon: "/partners/ies.webp",
     points: [
-      "Lead engineer on Atlas project",
-      "Specializes in locomotion algorithms",
-      "10+ robotics patents",
-      "PhD in Robotics from Carnegie Mellon",
-      "DARPA Robotics Challenge winner",
-      "Published in Science Robotics",
-      "Advisor to 5 robotics startups",
+      "Telecommunications engineer, KPIT technologies",
+      "IEEE WIE Tunisia affinity group chair",
+      "IEEE WIE Global Star subcommittee chair",
+      "IEEE WIE ILS Co-chair",
+      "IEEE WIE Region 8 CRSP Member",
+      "IEEE WIE LM & WIE Marketing Co-Chair",
+      "IEEE WIE ILS 2026 Organizing Co-Chair",
+      "IEEE Entrepreneurship Global 2026 Social Media Coordinator",
     ],
-    image: "/speakers/speaker2.jpg",
+    image: "/speakers/baya.png",
   },
   {
-    name: "Dr. Nadia Khelil",
-    title: "Power Systems Expert",
+    name: "Ms. Tasnim Chiboub",
+    title: "IEEE Entrepreneurship LG",
     organization: "Siemens Energy",
     chapter: "PES Tunisia Section Chapter",
     chapterIcon: "/partners/pes.png",
     points: [
-      "Smart grid infrastructure specialist",
-      "Led North Africa renewable integration",
-      "IEEE PES Distinguished Lecturer",
-      "30+ years in energy sector",
-      "Author of 50+ technical papers",
-      "Holder of 12 patents",
-      "UN Climate Change advisor",
+      "Software Engineering student",
+      "Bachelor’s degree in ICT – IoT specialization",
+      "Entrepreneurship Activities Coordinator – IEEE Tunisia Section",
+      "Chair – IEEE Entrepreneurship Tunisia Local Group",
+      "Chair – IEEE CN Tunisia Affinity Group",
+      "Vice Chair – IEEE WIE Tunisia Affinity Group",
     ],
-    image: "/speakers/speaker3.jpg",
+    image: "/speakers/tasnim.png",
   },
   {
-    name: "Youssef Trabelsi",
-    title: "Aerospace Systems Engineer",
+    name: "Mr. Mohamed Fares Frini",
+    title: "IEEE CN Tunisia Section AG",
     organization: "Airbus Defence",
     chapter: "Aess Tunisia Section Chapter",
     chapterIcon: "/partners/aess.png",
     points: [
-      "Avionics and navigation systems",
-      "Worked on Eurofighter Typhoon",
-      "PhD in Aerospace Engineering",
-      "15 years in aerospace industry",
-      "Led 3 major defense projects",
-      "Published in IEEE Aerospace",
-      "Security clearance holder",
+      "IT Engineer",
+      "Data Scientist",
+      "Freelance Web Developer",
+      "Webmaster – IEEE Computer Society Tunisia Section",
+      "Webmaster – IEEE Consultants Network Tunisia Affinity Group",
+      "ExCom Member – IEEE Entrepreneurship Tunisia Local Group",
     ],
-    image: "/speakers/speaker4.jpg",
+    image: "/speakers/frini.png",
   },
   {
-    name: "Dr. Leila Bouaziz",
-    title: "Humanitarian Tech Director",
+    name: "Ms. Amira Ouerfelli",
+    title: "IEEE SIGHT Tunisia Section AG",
     organization: "Engineers Without Borders",
     chapter: "Sight Tunisia Section Group",
     chapterIcon: "/partners/sight.svg",
     points: [
-      "Disaster response technology specialist",
-      "Developed low-cost water sensors",
-      "UN Tech Ambassador 2023",
-      "Worked in 15 disaster zones",
-      "Founded 3 humanitarian tech NGOs",
-      "TEDx speaker on tech for good",
-      "Forbes 40 Under 40 2024",
+      "IEEE MGA Representative, HTB (2026)",
+      "IEEE HTB SIGHT Chair (2026)",
+      "IEEE HTAC Region 8 Member (2026)",
+      "IEEE SIGHT Tunisia Section Chair (2025–2026)",
+      "Humanitarian Technologies Coordinator, IEEE Tunisia Section (2025–2026)",
+      "Co-Chair, Implementation Committee for Education, IEEE Smart Village Global (2025–2026)",
+      "IAS WIE Region 8 Representative (2025–2026)",
     ],
-    image: "/speakers/speaker5.jpg",
+    image: "/speakers/amira.png",
   },
   {
-    name: "Prof. Samir Gharbi",
-    title: "Circuits Design Professor",
+    name: "Mr. Ayoub Madyouni",
+    title: "IEEE CEDA Tunisia Section Council",
     organization: "ENIT Tunis",
     chapter: "CEDA Tunisia chapter",
     chapterIcon: "/partners/ceda.png",
     points: [
-      "VLSI design expert",
-      "Founded 2 semiconductor startups",
-      "IEEE CEDA Outstanding Contributor",
-      "Published 100+ research papers",
-      "Supervised 30+ PhD students",
-      "Holder of 15 patents",
-      "Consultant for Intel and AMD",
+      "Final Year Mechanical Engineering Student",
+      "IEEE CEDA Tunisia Section chapter coordinator",
+      "IEEE PES WIE Region 8  liaison officer chapter",
+      "IEEE PES SYP MENTOR",
+      "IEEE PES SYP EMAIL and CONTENT manage",
+      "IEEE IES ENSIT SBC founder",
+      "IEEE IAS PES ENSIT SBJC CHAIR 2025",
     ],
-    image: "/speakers/speaker6.jpg",
+    image: "/speakers/aayoub.png",
   },
   {
-    name: "Dr. Amira Mansour",
-    title: "Women in STEM Advocate",
+    name: "Mr. Firas Frigui",
+    title: "IEEE CEDA Tunisia Section Council",
     organization: "UNESCO",
     chapter: "WIE Tunisia Section AG",
     chapterIcon: "/partners/wie.png",
     points: [
-      "Global gender equality in tech",
-      "Launched 15 STEM programs in Africa",
-      "Forbes 40 Under 40 2024",
-      "Advisor to 10 governments",
-      "Published book on women in tech",
-      "CNN Hero of the Year 2023",
-      "PhD from Oxford University",
+      "Computer Science and Engineering student at Polytechnique",
+      "Membership Development Manager – IEEE CEDA Tunisia Chapter",
+      "Former Treasurer – IEEE SIGHT EPS Group",
+      "Former PES DAY Ambassado",
+      "Winner – Tech4Good Innovation Challenge",
     ],
-    image: "/speakers/speaker7.jpg",
+    image: "/speakers/firas.png",
   },
   {
-    name: "Mehdi Ben Abdallah",
-    title: "Industrial IoT Architect",
+    name: "Ms. Chayma Bouattour",
+    title: "IEEE IES Tunisia Section Chapter",
     organization: "Schneider Electric",
     chapter: "IES Tunisia Section Chapter",
     chapterIcon: "/partners/ies.webp",
     points: [
-      "Industry 4.0 implementation expert",
-      "Smart factory pioneer",
-      "20+ industrial automation projects",
-      "Certified IoT specialist",
-      "Led digital transformation for 10 factories",
-      "Published in Industry 4.0 journal",
-      "Speaker at Hannover Messe",
+      "IEEE IES Tunisia Chapter Student Representative",
+      "IEEE IES Hubs & Nodes North Africa Lead",
+      "IEEE R8 WIE-Clo representing IEEE IES Tunisia Chapter",
     ],
-    image: "/speakers/speaker8.jpg",
+    image: "/speakers/chayma.png",
   },
   {
-    name: "Dr. Sonia Ferchichi",
-    title: "Energy Policy Advisor",
+    name: "Mr. Achraf Zribi",
+    title: "IEEE PES Tunisia Section Chapter",
     organization: "IRENA",
     chapter: "PES Tunisia Section Chapter",
     chapterIcon: "/partners/pes.png",
     points: [
-      "Renewable energy transition strategist",
-      "Advised 12 governments on energy policy",
-      "Oxford Climate Scholar",
-      "Author of 3 energy policy books",
-      "Led 5 major renewable projects",
-      "UN Sustainable Development advisor",
-      "PhD in Energy Economics",
+      "Software Engineer at Zyga AI",
+      "Vice Chair – IEEE Power & Energy Society Tunisia Section",
+      "Treasurer – IEEE Power & Energy Society Tunisia Section, 2023–2024",
     ],
-    image: "/speakers/speaker9.jpg",
+    image: "/speakers/achraff.png",
   },
   {
-    name: "Hichem Jelassi",
-    title: "Deep Learning Researcher",
+    name: "Mr. AmenAllah Mselmi",
+    title: "IEEE AESS Tunisia Section Chapter",
     organization: "NVIDIA",
     chapter: "CN Tunisia Section",
     chapterIcon: "/partners/cn.png",
     points: [
-      "CUDA optimization specialist",
-      "Contributor to PyTorch",
-      "GPU architecture expert",
-      "Published 20+ papers in ML conferences",
-      "Speaker at GTC 2023",
-      "Open source maintainer",
-      "PhD in Deep Learning",
+      "Software Engineering student at ISSATSO",
+      "Mentorship Program Coordinator – IEEE AESS Tunisia Chapter",
+      "WIE Chapter Liaison Officer – IEEE Region 8",
+      "General Secretary – IEEE ISSATSO SB",
+      "Vice Chair – IEEE PES ISSATSO SBC",
+      "Backend Developer – IEEE YESIST12",
+      "IEEE Day Ambassador 2025",
+      "IEEE PES Day Ambassador 2026",
+      "IEEE WIE Day Ambassador 2026",
     ],
-    image: "/speakers/speaker10.jpg",
+    image: "/speakers/amenallah.png",
   },
 ];
 
@@ -259,9 +226,10 @@ const roundTablesRegistration = {
   title: "Round Table Discussions",
   description:
     "Join intimate discussions with our speakers on specialized topics",
-  date: "March 26, 2024 • 9:00 AM - 5:00 PM",
-  location: "Tunisia Tech Center, Tunis",
-  registrationLink: "https://forms.example.com/roundtables-registration",
+  date: "20:00PM - 21:30PM",
+  location: "TRC3.0 ISIMS",
+  registrationLink:
+    "https://docs.google.com/forms/d/e/1FAIpQLSeK2f-rDaVuSqtIWMXKkvi0mZOYnEsNAXxlQaBSJokQ_NrMcw/viewform",
   topics: [
     "AI Ethics & Governance",
     "Robotics in Industry 4.0",
@@ -438,9 +406,6 @@ export default function SpeakersPage() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <h2 className="text-2xl font-light text-white/80 tracking-tight">
-                Speakers & Round Table
-              </h2>
               <div className="w-12 h-px bg-white/20 mt-3" />
             </motion.div>
 
@@ -512,25 +477,6 @@ function SpeakerCard({ speaker }) {
 
         {/* Content */}
         <div className="flex-1 p-6 pt-4 flex flex-col space-y-4">
-          {/* Organization */}
-          <p className="text-xs font-light text-white/40">
-            {speaker.organization}
-          </p>
-
-          {/* Chapter Icon - Moved to bottom of image section */}
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 opacity-50">
-              <img
-                src={speaker.chapterIcon}
-                alt={speaker.chapter}
-                className="w-full h-full object-contain brightness-0 invert"
-              />
-            </div>
-            <span className="text-[10px] font-light text-white/50">
-              {speaker.chapter}
-            </span>
-          </div>
-
           {/* Points with expand/collapse */}
           <div className="space-y-2 mt-2">
             <ul className="space-y-2">
@@ -551,7 +497,7 @@ function SpeakerCard({ speaker }) {
                 onClick={() => setShowAllPoints(!showAllPoints)}
                 className="flex items-center gap-1 text-[10px] font-light text-white/30 hover:text-white/50 transition-colors duration-300 mt-2 group/btn"
               >
-                <span>
+                <span className="cursor-pointer">
                   {showAllPoints
                     ? "See less"
                     : `See ${speaker.points.length - initialPointsCount} more`}
@@ -600,7 +546,7 @@ function WorkshopCard({ speaker }) {
     <div className="relative group">
       <div className="relative p-10 bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm border border-white/10 transition-all duration-700 hover:border-white/20 flex flex-col md:flex-row gap-8 items-start">
         {/* Decorative elements */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#efb073]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#efb073]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
         {/* Left side - Workshop info */}
         <div className="flex-1 space-y-6">
@@ -648,13 +594,6 @@ function WorkshopCard({ speaker }) {
 
           {/* Chapter Icon */}
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 opacity-50">
-              <img
-                src={speaker.chapterIcon}
-                alt={speaker.chapter}
-                className="w-full h-full object-contain brightness-0 invert"
-              />
-            </div>
             <span className="text-xs font-light text-white/50">
               {speaker.chapter}
             </span>
@@ -680,7 +619,7 @@ function WorkshopCard({ speaker }) {
                 onClick={() => setShowAllPoints(!showAllPoints)}
                 className="flex items-center gap-1 text-xs font-light text-white/30 hover:text-white/50 transition-colors duration-300 mt-2 group/btn"
               >
-                <span>
+                <span className="cursor-pointer">
                   {showAllPoints
                     ? "See less"
                     : `See ${speaker.points.length - initialPointsCount} more`}
@@ -706,7 +645,7 @@ function WorkshopCard({ speaker }) {
 
           {/* Registration Button */}
           <div className="pt-4">
-            <Link
+            <a
               href={speaker.registrationLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -728,7 +667,7 @@ function WorkshopCard({ speaker }) {
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -763,7 +702,7 @@ function RegistrationCard({ registration }) {
     <div className="relative group">
       <div className="relative p-10 bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm border border-white/10 transition-all duration-700 hover:border-white/20">
         {/* Decorative elements */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4a6fa5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#4a6fa5]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
         <div className="flex flex-col md:flex-row gap-8 items-start justify-between">
           {/* Left side - Info */}
@@ -836,23 +775,6 @@ function RegistrationCard({ registration }) {
                 <span>{registration.location}</span>
               </div>
             </div>
-
-            {/* Topics */}
-            <div className="space-y-3">
-              <h4 className="text-sm font-light text-white/60">
-                Discussion Topics:
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {registration.topics.map((topic, idx) => (
-                  <span
-                    key={idx}
-                    className="px-3 py-1.5 text-xs font-light text-white/40 bg-white/5 border border-white/10"
-                  >
-                    {topic}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Right side - Registration CTA */}
@@ -868,13 +790,13 @@ function RegistrationCard({ registration }) {
               </div>
             </div>
 
-            <Link
+            <a
               href={registration.registrationLink}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 group/link text-center"
             >
-              <span className="text-sm font-light text-white/80 flex items-center justify-center gap-3">
+              <span className="text-sm cursor-pointer font-light text-white/80 flex items-center justify-center gap-3">
                 Register for Round Tables
                 <svg
                   className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1"
@@ -890,7 +812,7 @@ function RegistrationCard({ registration }) {
                   />
                 </svg>
               </span>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

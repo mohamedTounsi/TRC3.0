@@ -19,25 +19,25 @@ export default function ProgramPage() {
   const schedule = [
     {
       time: "1:30 pm",
-      event: "Check-in",
+      event: "Check-In",
       full: "1:30 pm – 3:00 pm",
       desc: "Registration and welcome",
     },
     {
       time: "3:00 pm",
-      event: "Opening ceremony",
+      event: "Opening Ceremony",
       full: "3:00 pm – 4:00 pm",
       desc: "Welcome address and introductions",
     },
     {
       time: "4:00 pm",
-      event: "Panel discussion",
+      event: "Panel Discussion",
       full: "4:00 pm – 5:30 pm",
       desc: "Industry experts discuss future trends",
     },
     {
       time: "5:30 pm",
-      event: "Hackathon launch",
+      event: "Hackathon Launch",
       full: "5:30 pm – 6:30 pm",
       desc: "Kickoff and team formation",
     },
@@ -49,37 +49,37 @@ export default function ProgramPage() {
     },
     {
       time: "8:00 pm",
-      event: "Round tables & workshop",
+      event: "Round Tables & Workshop",
       full: "8:00 pm – 9:30 pm",
       desc: "Interactive sessions with experts",
     },
     {
       time: "9:30 pm",
-      event: "Coffee + musical break",
+      event: "Coffee + Musical Break",
       full: "9:30 pm – 10:00 pm",
       desc: "Refreshments and entertainment",
     },
     {
       time: "10:00 pm",
-      event: "TRC game night",
+      event: "TRC Game Night",
       full: "10:00 pm – 11:30 pm",
       desc: "Team building activities",
     },
     {
       time: "11:30 pm",
-      event: "Coffee break",
+      event: "Coffee Break + Musical Break",
       full: "11:30 pm – 12:00 am",
       desc: "Midnight refreshments",
     },
     {
       time: "12:00 am",
-      event: "Surprise activity",
+      event: "Surprise Activity",
       full: "12:00 am – 1:00 am",
       desc: "Something special awaits",
     },
     {
       time: "1:00 am",
-      event: "Entertainment activities",
+      event: "Entertainment Activities",
       full: "1:00 am – 4:30 am",
       desc: "Games and social time",
     },
@@ -91,31 +91,31 @@ export default function ProgramPage() {
     },
     {
       time: "5:30 am",
-      event: "Final hackathon part",
+      event: "Final Hackathon Part",
       full: "5:30 am – 8:00 am",
       desc: "Last coding sprint",
     },
     {
       time: "8:00 am",
-      event: "Project submissions",
+      event: "Project Submissions",
       full: "8:00 am – 10:00 am",
       desc: "Finalize and submit projects",
     },
     {
       time: "10:00 am",
-      event: "Pitching session",
+      event: "Pitching Session",
       full: "10:00 am – 12:30 pm",
       desc: "Teams present their solutions",
     },
     {
       time: "12:30 pm",
-      event: "Jury discussion",
+      event: "Jury Discussion",
       full: "12:30 pm – 1:00 pm",
       desc: "Deliberation and judging",
     },
     {
       time: "1:00 pm",
-      event: "Closing ceremony",
+      event: "Closing Ceremony",
       full: "1:00 pm – 2:00 pm",
       desc: "Awards and farewell",
     },
@@ -341,42 +341,74 @@ export default function ProgramPage() {
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    time: "4:00 PM",
-                    event: "Panel Discussion",
-                    highlight: "Industry experts share insights",
-                  },
-                  {
-                    time: "8:00 PM",
-                    event: "Workshop",
-                    highlight: "Hands-on learning with Amir Zouenkhi",
-                  },
-                  {
-                    time: "10:00 AM",
-                    event: "Pitching Session",
-                    highlight: "Teams present innovative solutions",
-                  },
-                ].map((moment, idx) => (
-                  <div
-                    key={idx}
-                    className="relative p-5 bg-white/[0.02] border border-white/5"
-                  >
-                    <div className="text-xs font-light text-white/50 mb-2">
-                      {moment.time}
-                    </div>
-                    <div className="text-base font-light text-white/80 mb-1">
-                      {moment.event}
-                    </div>
-                    <div className="text-xs font-light text-white/30">
-                      {moment.highlight}
-                    </div>
-
-                    {/* Small accent */}
-                    <div className="absolute top-3 right-3 w-2 h-px bg-white/20" />
-                    <div className="absolute top-3 right-3 w-px h-2 bg-white/20" />
+                {/* Round Tables */}
+                <div className="relative p-5 bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 group">
+                  <div className="text-xs font-light text-white/50 mb-2">
+                    8:00 PM
                   </div>
-                ))}
+
+                  <div className="text-base font-light text-white/80 mb-1 group-hover:text-white/90">
+                    Round Tables
+                  </div>
+
+                  <div className="text-xs font-light text-white/30 mb-4">
+                    Interactive sessions with Amir Zouenkhi
+                  </div>
+
+                  <a
+                    target="_blank"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSeK2f-rDaVuSqtIWMXKkvi0mZOYnEsNAXxlQaBSJokQ_NrMcw/viewform"
+                    className="inline-block text-xs px-4 py-2 border border-white/20 text-white/80 hover:bg-white/10 transition"
+                  >
+                    Register
+                  </a>
+                </div>
+
+                {/* Workshop */}
+                <div className="relative p-5 bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 group">
+                  <div className="text-xs font-light text-white/50 mb-2">
+                    8:00 PM
+                  </div>
+
+                  <div className="text-base font-light text-white/80 mb-1 group-hover:text-white/90">
+                    Workshop
+                  </div>
+
+                  <div className="text-xs font-light text-white/30 mb-4">
+                    Hands-on learning with Amir Zouenkhi
+                  </div>
+
+                  <a
+                    target="_blank"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSeK2f-rDaVuSqtIWMXKkvi0mZOYnEsNAXxlQaBSJokQ_NrMcw/viewform"
+                    className="inline-block text-xs px-4 py-2 border border-white/20 text-white/80 hover:bg-white/10 transition"
+                  >
+                    Register
+                  </a>
+                </div>
+
+                {/* Game Night */}
+                <div className="relative p-5 bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 group">
+                  <div className="text-xs font-light text-white/50 mb-2">
+                    10:00 PM
+                  </div>
+
+                  <div className="text-base font-light text-white/80 mb-1 group-hover:text-white/90">
+                    Game Night
+                  </div>
+
+                  <div className="text-xs font-light text-white/30 mb-4">
+                    Team building activities and fun
+                  </div>
+
+                  <a
+                    target="_blank"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSdfuc6R8BSuy8CAx2UCFI1EZIkUVk4cUd2Re9jwHLnPeL-lkA/viewform"
+                    className="inline-block text-xs px-4 py-2 border border-white/20 text-white/80 hover:bg-white/10 transition"
+                  >
+                    Register
+                  </a>
+                </div>
               </div>
 
               {/* Corner accents */}

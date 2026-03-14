@@ -23,6 +23,8 @@ import {
   Unlock,
   DollarSign,
   CreditCard,
+  Cpu,
+  Globe,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -32,7 +34,7 @@ export default function DashboardPage() {
   const [exportLoading, setExportLoading] = useState(false);
   const [registrations, setRegistrations] = useState([]);
   const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor', 'paid', 'unpaid'
+  const [filterType, setFilterType] = useState("all"); // 'all', 'challenger', 'visitor', 'paid', 'unpaid', 'ieee', 'nonieee'
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' (newest first) or 'asc' (oldest first)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [searchLocked, setSearchLocked] = useState(false);
@@ -191,6 +193,8 @@ export default function DashboardPage() {
       if (filterType === "visitor") return reg.isChallenger === false;
       if (filterType === "paid") return reg.paid === true;
       if (filterType === "unpaid") return reg.paid === false;
+      if (filterType === "ieee") return reg.isIEEEMember === true;
+      if (filterType === "nonieee") return reg.isIEEEMember === false;
       return true;
     })
     // Then filter by search (only if not locked or if locked but search exists)
@@ -228,6 +232,46 @@ export default function DashboardPage() {
       return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
     });
 
+  // Calculate team information for challengers
+  const getTeamInfo = () => {
+    const teamMap = new Map();
+    let teamCounter = 1;
+
+    // First, identify all unique teams among challengers
+    processedRegistrations
+      .filter((reg) => reg.isChallenger && reg.teamName)
+      .forEach((reg) => {
+        const teamName = reg.teamName.trim().toLowerCase();
+        if (!teamMap.has(teamName)) {
+          teamMap.set(teamName, {
+            name: reg.teamName,
+            number: teamCounter++,
+            count: 0,
+            members: [],
+          });
+        }
+      });
+
+    // Count members per team and add member info
+    processedRegistrations.forEach((reg, index) => {
+      if (reg.isChallenger && reg.teamName) {
+        const teamName = reg.teamName.trim().toLowerCase();
+        const teamInfo = teamMap.get(teamName);
+        if (teamInfo) {
+          teamInfo.count++;
+          teamInfo.members.push({
+            ...reg,
+            displayIndex: index,
+          });
+        }
+      }
+    });
+
+    return teamMap;
+  };
+
+  const teamInfo = getTeamInfo();
+
   const paidCount = processedRegistrations.filter((r) => r.paid).length;
   const unpaidCount = processedRegistrations.length - paidCount;
   const challengerCount = processedRegistrations.filter(
@@ -236,6 +280,15 @@ export default function DashboardPage() {
   const visitorCount = processedRegistrations.filter(
     (r) => !r.isChallenger
   ).length;
+  const ieeeCount = processedRegistrations.filter((r) => r.isIEEEMember).length;
+  const nonIeeeCount = processedRegistrations.filter(
+    (r) => !r.isIEEEMember
+  ).length;
+  const teamCount = new Set(
+    processedRegistrations
+      .filter((r) => r.isChallenger && r.teamName)
+      .map((r) => r.teamName.trim().toLowerCase())
+  ).size;
 
   const getSortIcon = () => {
     if (sortOrder === "desc") {
@@ -257,6 +310,23 @@ export default function DashboardPage() {
     return {
       date: date.toLocaleDateString(),
       time: date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+  };
+
+  // Function to get team number and highlight style
+  const getTeamHighlight = (reg) => {
+    if (!reg.isChallenger || !reg.teamName) return null;
+
+    const teamName = reg.teamName.trim().toLowerCase();
+    const team = teamInfo.get(teamName);
+
+    if (!team) return null;
+
+    return {
+      number: team.number,
+      isFirstInTeam: team.members[0]?._id === reg._id,
+      memberIndex: team.members.findIndex((m) => m._id === reg._id) + 1,
+      totalMembers: team.count,
     };
   };
 
@@ -719,9 +789,15 @@ export default function DashboardPage() {
 
         .stats-row {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(7, 1fr);
           gap: 16px;
           margin-bottom: 28px;
+        }
+
+        @media (max-width: 1024px) {
+          .stats-row {
+            grid-template-columns: repeat(4, 1fr);
+          }
         }
 
         @media (max-width: 768px) {
@@ -880,6 +956,35 @@ export default function DashboardPage() {
           width: 35px;
         }
 
+        .team-highlight {
+          background: rgba(239,176,115,0.1);
+          border-left: 3px solid #efb073;
+        }
+
+        .team-badge {
+          display: inline-block;
+          padding: 2px 6px;
+          background: rgba(239,176,115,0.15);
+          border: 1px solid rgba(239,176,115,0.3);
+          border-radius: 2px;
+          color: #efb073;
+          font-size: 8px;
+          font-weight: 500;
+          margin-right: 6px;
+        }
+
+        .team-name-cell {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .team-member-info {
+          font-size: 8px;
+          color: rgba(239,176,115,0.5);
+          margin-left: 4px;
+        }
+
         .type-badge-mini {
           display: inline-block;
           padding: 2px 6px;
@@ -903,6 +1008,18 @@ export default function DashboardPage() {
           border: 1px solid rgba(148,163,184,0.3);
         }
 
+        .type-badge-mini.ieee {
+          background: rgba(59,130,246,0.15);
+          color: #60a5fa;
+          border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .type-badge-mini.nonieee {
+          background: rgba(156,163,175,0.15);
+          color: #9ca3af;
+          border: 1px solid rgba(156,163,175,0.3);
+        }
+
         .type-badge {
           display: inline-block;
           padding: 3px 8px;
@@ -922,6 +1039,18 @@ export default function DashboardPage() {
           background: rgba(100,116,139,0.15);
           color: #94a3b8;
           border: 1px solid rgba(148,163,184,0.3);
+        }
+
+        .type-badge.ieee {
+          background: rgba(59,130,246,0.15);
+          color: #60a5fa;
+          border: 1px solid rgba(59,130,246,0.3);
+        }
+
+        .type-badge.nonieee {
+          background: rgba(156,163,175,0.15);
+          color: #9ca3af;
+          border: 1px solid rgba(156,163,175,0.3);
         }
 
         .payment-icon {
@@ -998,6 +1127,10 @@ export default function DashboardPage() {
           transition: border-color 0.2s;
         }
 
+        .reg-card.team-highlight {
+          border-left: 3px solid #efb073;
+        }
+
         .reg-card::before {
           content: '';
           position: absolute;
@@ -1034,6 +1167,18 @@ export default function DashboardPage() {
           letter-spacing: 0.1em;
           flex-shrink: 0;
           margin-top: 3px;
+        }
+
+        .reg-card-team-badge {
+          display: inline-block;
+          padding: 2px 8px;
+          background: rgba(239,176,115,0.15);
+          border: 1px solid rgba(239,176,115,0.3);
+          border-radius: 2px;
+          color: #efb073;
+          font-size: 9px;
+          font-weight: 500;
+          margin-right: 6px;
         }
 
         .reg-card-grid {
@@ -1378,6 +1523,24 @@ export default function DashboardPage() {
                 <XCircle size={14} />
                 Unpaid
               </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "ieee" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("ieee")}
+              >
+                <Cpu size={14} />
+                IEEE
+              </button>
+              <button
+                className={`filter-btn ${
+                  filterType === "nonieee" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("nonieee")}
+              >
+                <Globe size={14} />
+                Non-IEEE
+              </button>
 
               {/* Sort Button */}
               <button
@@ -1507,38 +1670,102 @@ export default function DashboardPage() {
                   <p className="stat-value">{unpaidCount}</p>
                 </div>
               </div>
+              <div
+                className={`stat-card ${filterType === "ieee" ? "active" : ""}`}
+                onClick={() => setFilterType("ieee")}
+              >
+                <Cpu size={20} className="stat-icon" />
+                <div>
+                  <p className="stat-label">IEEE</p>
+                  <p className="stat-value">{ieeeCount}</p>
+                </div>
+              </div>
+              <div
+                className={`stat-card ${
+                  filterType === "nonieee" ? "active" : ""
+                }`}
+                onClick={() => setFilterType("nonieee")}
+              >
+                <Globe size={20} className="stat-icon" />
+                <div>
+                  <p className="stat-label">Non-IEEE</p>
+                  <p className="stat-value">{nonIeeeCount}</p>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Sort Info Bar */}
-          {!loading && processedRegistrations.length > 0 && (
-            <div
-              style={{
-                marginBottom: "16px",
-                fontSize: "11px",
-                color: "rgba(239,176,115,0.5)",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <span>Sorted by:</span>
-              <span
+          {/* Team Info Bar for Challengers */}
+          {!loading &&
+            filterType === "challenger" &&
+            processedRegistrations.length > 0 && (
+              <div
                 style={{
-                  display: "inline-flex",
+                  marginBottom: "16px",
+                  fontSize: "11px",
+                  color: "rgba(239,176,115,0.5)",
+                  display: "flex",
                   alignItems: "center",
-                  gap: "4px",
-                  color: "#efb073",
+                  gap: "8px",
+                  flexWrap: "wrap",
                 }}
               >
-                {filterType === "challenger"
-                  ? "Team Name"
-                  : "Registration Date"}
-                {getSortIcon()}
-              </span>
-              <span>({getSortText()})</span>
-            </div>
-          )}
+                <span>Teams:</span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    color: "#efb073",
+                  }}
+                >
+                  {teamCount} unique teams
+                </span>
+                <span>•</span>
+                <span>Sorted by:</span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    color: "#efb073",
+                  }}
+                >
+                  Team Name {getSortIcon()}
+                </span>
+                <span>({getSortText()})</span>
+              </div>
+            )}
+
+          {/* Sort Info Bar for other views */}
+          {!loading &&
+            filterType !== "challenger" &&
+            processedRegistrations.length > 0 && (
+              <div
+                style={{
+                  marginBottom: "16px",
+                  fontSize: "11px",
+                  color: "rgba(239,176,115,0.5)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <span>Sorted by:</span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    color: "#efb073",
+                  }}
+                >
+                  Registration Date
+                  {getSortIcon()}
+                </span>
+                <span>({getSortText()})</span>
+              </div>
+            )}
 
           {/* Content */}
           <div className="table-wrap">
@@ -1592,19 +1819,26 @@ export default function DashboardPage() {
                     <tbody>
                       {processedRegistrations.map((reg, index) => {
                         const { date, time } = formatDateTime(reg.createdAt);
+                        const teamHighlight = getTeamHighlight(reg);
+
                         return (
-                          <tr key={reg._id}>
+                          <tr
+                            key={reg._id}
+                            className={teamHighlight ? "team-highlight" : ""}
+                          >
                             <td className="index-cell dim">
                               {String(index + 1).padStart(2, "0")}
                             </td>
                             <td>
-                              <span
-                                className={`type-badge-mini ${
-                                  reg.isChallenger ? "challenger" : "visitor"
-                                }`}
-                              >
-                                {reg.isChallenger ? "CH" : "V"}
-                              </span>
+                              {reg.isChallenger ? (
+                                <span className="type-badge-mini challenger">
+                                  CH
+                                </span>
+                              ) : (
+                                <span className="type-badge-mini visitor">
+                                  V
+                                </span>
+                              )}
                             </td>
                             <td
                               style={{
@@ -1613,7 +1847,23 @@ export default function DashboardPage() {
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              {reg.fullName}
+                              <div className="team-name-cell">
+                                {teamHighlight && (
+                                  <span
+                                    className="team-badge"
+                                    title={`Team #${teamHighlight.number} (${teamHighlight.memberIndex}/${teamHighlight.totalMembers})`}
+                                  >
+                                    #{teamHighlight.number}
+                                  </span>
+                                )}
+                                {reg.fullName}
+                                {teamHighlight &&
+                                  teamHighlight.isFirstInTeam && (
+                                    <span className="team-member-info">
+                                      (Team Lead)
+                                    </span>
+                                  )}
+                              </div>
                             </td>
                             <td className="dim" style={{ fontSize: "10px" }}>
                               {reg.email}
@@ -1695,119 +1945,154 @@ export default function DashboardPage() {
 
                 {/* Mobile Cards */}
                 <div className="mobile-cards">
-                  {processedRegistrations.map((reg, index) => (
-                    <div className="reg-card" key={reg._id}>
-                      <div className="reg-card-header">
-                        <span className="reg-card-name">{reg.fullName}</span>
-                        <span className="reg-card-index">
-                          #{String(index + 1).padStart(2, "0")}
-                        </span>
-                      </div>
+                  {processedRegistrations.map((reg, index) => {
+                    const teamHighlight = getTeamHighlight(reg);
 
-                      <div className="reg-card-grid">
-                        <div className="reg-card-field full-width">
-                          <span className="reg-field-label">Type</span>
-                          <span
-                            className={`type-badge ${
-                              reg.isChallenger ? "challenger" : "visitor"
-                            }`}
-                          >
-                            {reg.isChallenger ? "CHALLENGER" : "VISITOR"}
-                          </span>
-                        </div>
-
-                        <div className="reg-card-field full-width">
-                          <span className="reg-field-label">Email</span>
-                          <span className="reg-field-value dim">
-                            {reg.email}
-                          </span>
-                        </div>
-
-                        <div className="reg-card-field">
-                          <span className="reg-field-label">Phone</span>
-                          <span className="reg-field-value dim">
-                            {reg.phoneNumber}
-                          </span>
-                        </div>
-
-                        <div className="reg-card-field">
-                          <span className="reg-field-label">IEEE Member</span>
-                          <span
-                            className={
-                              reg.isIEEEMember ? "ieee-yes" : "ieee-no"
-                            }
-                          >
-                            {reg.isIEEEMember ? "Yes" : "No"}
-                          </span>
-                        </div>
-
-                        {reg.isIEEEMember ? (
-                          <>
-                            <div className="reg-card-field">
-                              <span className="reg-field-label">IEEE SB</span>
-                              <span className="reg-field-value dim">
-                                {reg.ieeeSB || "—"}
+                    return (
+                      <div
+                        className={`reg-card ${
+                          teamHighlight ? "team-highlight" : ""
+                        }`}
+                        key={reg._id}
+                      >
+                        <div className="reg-card-header">
+                          <span className="reg-card-name">
+                            {teamHighlight && (
+                              <span
+                                className="reg-card-team-badge"
+                                title={`Team #${teamHighlight.number} (${teamHighlight.memberIndex}/${teamHighlight.totalMembers})`}
+                              >
+                                #{teamHighlight.number}
                               </span>
-                            </div>
-                            <div className="reg-card-field">
-                              <span className="reg-field-label">IEEE ID</span>
-                              <span className="reg-field-value dim">
-                                {reg.ieeeId || "—"}
-                              </span>
-                            </div>
-                          </>
-                        ) : (
+                            )}
+                            {reg.fullName}
+                          </span>
+                          <span className="reg-card-index">
+                            #{String(index + 1).padStart(2, "0")}
+                          </span>
+                        </div>
+
+                        <div className="reg-card-grid">
                           <div className="reg-card-field full-width">
-                            <span className="reg-field-label">University</span>
+                            <span className="reg-field-label">Type</span>
+                            <span
+                              className={`type-badge ${
+                                reg.isChallenger ? "challenger" : "visitor"
+                              }`}
+                            >
+                              {reg.isChallenger ? "CHALLENGER" : "VISITOR"}
+                              {teamHighlight &&
+                                teamHighlight.isFirstInTeam &&
+                                " (Team Lead)"}
+                            </span>
+                          </div>
+
+                          <div className="reg-card-field full-width">
+                            <span className="reg-field-label">Email</span>
                             <span className="reg-field-value dim">
-                              {reg.universityName || "—"}
+                              {reg.email}
                             </span>
                           </div>
-                        )}
 
-                        {reg.isChallenger && (
-                          <div className="reg-card-field full-width">
-                            <span className="reg-field-label">Team</span>
-                            <span className="reg-field-value">
-                              {reg.teamName || "—"}
+                          <div className="reg-card-field">
+                            <span className="reg-field-label">Phone</span>
+                            <span className="reg-field-value dim">
+                              {reg.phoneNumber}
                             </span>
                           </div>
-                        )}
-                      </div>
 
-                      <div className="reg-card-footer">
-                        <span className="reg-card-date">
-                          {new Date(reg.createdAt).toLocaleString()}
-                        </span>
-                        <div className="reg-card-actions">
-                          {reg.paid ? (
-                            <button
-                              onClick={() => togglePaid(reg._id)}
-                              className="badge-paid"
-                              title="Click to mark as unpaid"
+                          <div className="reg-card-field">
+                            <span className="reg-field-label">IEEE Member</span>
+                            <span
+                              className={
+                                reg.isIEEEMember ? "ieee-yes" : "ieee-no"
+                              }
                             >
-                              <CheckCircle size={10} /> Paid
-                            </button>
+                              {reg.isIEEEMember ? "Yes" : "No"}
+                            </span>
+                          </div>
+
+                          {reg.isIEEEMember ? (
+                            <>
+                              <div className="reg-card-field">
+                                <span className="reg-field-label">IEEE SB</span>
+                                <span className="reg-field-value dim">
+                                  {reg.ieeeSB || "—"}
+                                </span>
+                              </div>
+                              <div className="reg-card-field">
+                                <span className="reg-field-label">IEEE ID</span>
+                                <span className="reg-field-value dim">
+                                  {reg.ieeeId || "—"}
+                                </span>
+                              </div>
+                            </>
                           ) : (
-                            <button
-                              onClick={() => togglePaid(reg._id)}
-                              className="btn-unpaid"
-                              title="Click to mark as paid"
-                            >
-                              <XCircle size={10} /> Unpaid
-                            </button>
+                            <div className="reg-card-field full-width">
+                              <span className="reg-field-label">
+                                University
+                              </span>
+                              <span className="reg-field-value dim">
+                                {reg.universityName || "—"}
+                              </span>
+                            </div>
                           )}
-                          <button
-                            onClick={() => confirmDelete(reg._id)}
-                            className="btn-delete"
-                            title="Delete registration"
-                          >
-                            <Trash2 size={13} />
-                          </button>
+
+                          {reg.isChallenger && (
+                            <div className="reg-card-field full-width">
+                              <span className="reg-field-label">Team</span>
+                              <span className="reg-field-value">
+                                {reg.teamName || "—"}
+                                {teamHighlight && (
+                                  <span
+                                    style={{
+                                      marginLeft: "8px",
+                                      color: "rgba(239,176,115,0.5)",
+                                    }}
+                                  >
+                                    (Member {teamHighlight.memberIndex}/
+                                    {teamHighlight.totalMembers})
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="reg-card-footer">
+                          <span className="reg-card-date">
+                            {new Date(reg.createdAt).toLocaleString()}
+                          </span>
+                          <div className="reg-card-actions">
+                            {reg.paid ? (
+                              <button
+                                onClick={() => togglePaid(reg._id)}
+                                className="badge-paid"
+                                title="Click to mark as unpaid"
+                              >
+                                <CheckCircle size={10} /> Paid
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => togglePaid(reg._id)}
+                                className="btn-unpaid"
+                                title="Click to mark as paid"
+                              >
+                                <XCircle size={10} /> Unpaid
+                              </button>
+                            )}
+                            <button
+                              onClick={() => confirmDelete(reg._id)}
+                              className="btn-delete"
+                              title="Delete registration"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}

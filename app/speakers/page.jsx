@@ -328,9 +328,11 @@ export default function SpeakersPage() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <h2 className="text-2xl font-light text-white/80 tracking-tight">
-                Panelists
-              </h2>
+              <div className="mb-10">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-[#cfdaff] via-[#cfdaff] to-[#000002] bg-clip-text text-transparent drop-shadow-lg">
+                  PANELISTS
+                </h2>
+              </div>
               <div className="w-12 h-px bg-white/20 mt-3" />
             </motion.div>
 
@@ -356,8 +358,8 @@ export default function SpeakersPage() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <h2 className="text-2xl font-light text-white/80 tracking-tight">
-                Featured Workshop
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-[#cfdaff] via-[#cfdaff] to-[#cfdaff] bg-clip-text text-transparent drop-shadow-lg">
+                FEATURED WORKSHOP
               </h2>
               <div className="w-12 h-px bg-white/20 mt-3" />
             </motion.div>
@@ -381,8 +383,8 @@ export default function SpeakersPage() {
               transition={{ duration: 0.6 }}
               className="mb-10"
             >
-              <h2 className="text-2xl font-light text-white/80 tracking-tight">
-                Round Table Discussions
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-[#cfdaff] via-[#cfdaff] to-[#cfdaff] bg-clip-text text-transparent drop-shadow-lg">
+                ROUND TABLE DISCUSSIONS
               </h2>
               <div className="w-12 h-px bg-white/20 mt-3" />
             </motion.div>

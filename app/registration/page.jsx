@@ -368,23 +368,6 @@ export default function RegistrationPage() {
           position: relative;
           overflow: hidden;
         }
-          .closed-btn {
-  background: rgba(120,120,120,0.1) !important;
-  border: 1px solid rgba(150,150,150,0.4) !important;
-  color: rgba(200,200,200,0.6) !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-}
-
-.closed-btn:hover {
-  transform: none !important;
-  background: rgba(120,120,120,0.1) !important;
-  border-color: rgba(150,150,150,0.4) !important;
-}
-
-.closed-btn::before {
-  display: none;
-}
 
         .input-wrap::before {
           content: '';
@@ -941,13 +924,18 @@ export default function RegistrationPage() {
                 </div>
 
                 {/* Submit Button */}
-                {/* Submit Button */}
-                <button
-                  type="button"
-                  disabled
-                  className="submit-btn closed-btn"
-                >
-                  Registration Closed
+                <button type="submit" disabled={loading} className="submit-btn">
+                  {loading ? (
+                    <>
+                      <Loader2 size={16} className="spinner" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Complete Registration
+                      <ArrowRight size={16} />
+                    </>
+                  )}
                 </button>
               </form>
             </div>

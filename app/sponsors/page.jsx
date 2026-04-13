@@ -47,7 +47,7 @@ const sponsors = [
   },
   {
     name: "Azar Gaming",
-    logo: "/sponsors/azarbg.png",
+    logo: "/sponsors/azarbg.avif",
     website: "#",
     rank: "Bronze",
   },
@@ -79,9 +79,14 @@ const sponsors = [
     name: "IEEE Foundation",
     logo: "/sponsors/ieeefoundation-Photoroom.png",
     website: "#",
-    rank: "Bronze",
+    rank: "IEEE",
   },
-
+  {
+    name: "Young Professionals",
+    logo: "/sponsors/yplg.png", // You'll adjust this path later
+    website: "#",
+    rank: "IEEE",
+  },
   {
     name: "Université Sfax",
     logo: "/sponsors/sfax.png",
@@ -96,7 +101,7 @@ const sponsors = [
   },
 ];
 
-const RANK_ORDER = ["Platinum", "Gold", "Silver", "Bronze", "Other"];
+const RANK_ORDER = ["Platinum", "Gold", "Silver", "Bronze", "IEEE", "Other"];
 
 // Color config only for shields and text accents
 const RANK_CONFIG = {
@@ -123,6 +128,12 @@ const RANK_CONFIG = {
     text: "#cd7f32",
     accent: "#cd7f32",
     shieldGlow: "rgba(205,127,50,0.3)",
+  },
+  IEEE: {
+    label: "IEEE Sponsors",
+    text: "#0066b3",
+    accent: "#0066b3",
+    shieldGlow: "rgba(0,102,179,0.5)",
   },
   Other: {
     label: "Other",
@@ -171,7 +182,7 @@ function RankShield({ rank }) {
         fill={cfg.accent}
         letterSpacing="0"
       >
-        {rank === "Other" ? "O" : rank[0]}
+        {rank === "IEEE" ? "I" : rank === "Other" ? "O" : rank[0]}
       </text>
     </svg>
   );
@@ -232,6 +243,7 @@ const TIER_COLS = {
   Gold: "grid-cols-2 sm:grid-cols-2",
   Silver: "grid-cols-2 sm:grid-cols-3",
   Bronze: "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
+  IEEE: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
   Other: "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
 };
 
@@ -241,6 +253,7 @@ const CARD_SIZE = {
   Gold: "h-56",
   Silver: "h-52",
   Bronze: "h-48",
+  IEEE: "h-56",
   Other: "h-48",
 };
 
@@ -450,7 +463,7 @@ export default function SponsorsPage() {
                 className="text-[10px] font-light tracking-wider"
                 style={{ color: RANK_CONFIG[rank].text, opacity: 0.5 }}
               >
-                {grouped[rank]?.length || 0} {rank}
+                {grouped[rank]?.length || 0} {rank === "IEEE" ? "IEEE" : rank}
               </span>
             ))}
           </div>

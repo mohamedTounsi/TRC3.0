@@ -28,6 +28,12 @@ const sponsors = [
     rank: "Silver",
   },
   {
+    name: "ENIS",
+    logo: "/sponsors/eniswh.png",
+    website: "#",
+    rank: "Silver",
+  },
+  {
     name: "Walima",
     logo: "/sponsors/walimabgbg.png",
     website: "#",
